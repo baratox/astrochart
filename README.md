@@ -1,5 +1,5 @@
-yourLibrary
-===
+Astrochart
+==========
 
 A JavaScript Library
 
@@ -26,10 +26,10 @@ Open `SpecRunner.html` in your browser and test with jasmine
 
 ```javascript
 //Get Version
-yourLibrary.version;
+astrochart.version;
 
 //say Hello World
-yourLibrary.hello();
+astrochart.hello();
 ```
 
 ### License

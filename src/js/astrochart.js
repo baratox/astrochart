@@ -1,5 +1,5 @@
 "use strict";
-window.yourLibrary = (function() {
+window.astrochart = (function() {
   var helloWorld, version;
   version = "0.1.0";
   helloWorld = function() {

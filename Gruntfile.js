@@ -39,7 +39,7 @@ module.exports = function(grunt) {
             },
             dist: {
               files: {
-                  "<%= dirs.build %>/yourLibrary.min.js": "<%= dirs.js %>/yourLibrary.js"
+                  "<%= dirs.build %>/astrochart.min.js": "<%= dirs.js %>/astrochart.js"
               }
             }
         },
