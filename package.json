@@ -10,29 +10,30 @@
     "email": ""
   },
   "repository": {
-      "type": "git",
-      "url": ""
+    "type": "git",
+    "url": ""
   },
   "keywords": [
-      "vpl",
-      "javascript",
-      "library"
+    "vpl",
+    "javascript",
+    "library"
   ],
   "bugs": {
-      "url": ""
+    "url": ""
   },
   "licenses": [
-      {
-          "type": "MIT",
-          "url": ""
-      }
+    {
+      "type": "MIT",
+      "url": ""
+    }
   ],
   "dependencies": {},
   "devDependencies": {
-    "grunt": "~0.4.1",
     "bower": "~1.1.2",
-    "grunt-notify": "~0.2.7",
+    "grunt": "~0.4.1",
+    "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-uglify": "~0.2.1",
+    "grunt-notify": "~0.2.7",
     "matchdep": "~0.1.2"
   },
   "engines": {

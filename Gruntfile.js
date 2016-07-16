@@ -31,6 +31,15 @@ module.exports = function(grunt) {
          " */\n" +
          "\n",
 
+        // Copy static files
+        copy: {
+            main: {
+                files: [
+                    {expand: true, cwd: "src/", src: ["image"], dest: "<%= dirs.build %>" },
+                ]
+            }
+        },
+
         // Minify and Concat archives
         uglify: {
             options: {
@@ -60,6 +69,6 @@ module.exports = function(grunt) {
     // --------------------------
 
     // Observe changes, concatenate, minify and validate files
-    grunt.registerTask( "default", [ "uglify", "notify:js" ]);
+    grunt.registerTask( "default", [ "copy", "uglify", "notify:js" ]);
 
 };
