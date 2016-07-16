@@ -9,7 +9,6 @@ module.exports = function(grunt) {
         // Define Directory
         dirs: {
             js:     "src/js",
-            coffee: "src/coffee",
             build:  "dist"
         },
 
@@ -32,18 +31,6 @@ module.exports = function(grunt) {
          " */\n" +
          "\n",
 
-        // Compile CoffeeScript
-        coffee: {
-            compileBare: {
-              options: {
-                bare: true
-              },
-              files: {
-                "<%= dirs.js %>/yourLibrary.js" : "<%= dirs.coffee %>/yourLibrary.coffee"
-              }
-            }
-        },
-
         // Minify and Concat archives
         uglify: {
             options: {
@@ -59,12 +46,6 @@ module.exports = function(grunt) {
 
         // Notifications
         notify: {
-          coffee: {
-            options: {
-              title: "CoffeeScript - <%= pkg.title %>",
-              message: "Compiled and minified with success!"
-            }
-          },
           js: {
             options: {
               title: "Javascript - <%= pkg.title %>",
@@ -79,6 +60,6 @@ module.exports = function(grunt) {
     // --------------------------
 
     // Observe changes, concatenate, minify and validate files
-    grunt.registerTask( "default", [ "coffee", "notify:coffee", "uglify", "notify:js" ]);
+    grunt.registerTask( "default", [ "uglify", "notify:js" ]);
 
 };
