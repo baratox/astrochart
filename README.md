@@ -1,35 +1,32 @@
 Astrochart
 ==========
 
-A JavaScript Library
+An astrology chart **not** made with Paintbrush.
 
-### Maintainer
+## Get Started
 
-[Christopher EnyTC](https://github.com/chrisenytc)
+Install dependencies:
 
-### Get Started
+    npm install && bower install
 
-Install dependencies
+Build Project:
 
-`sudo npm install && bower install`
+    grunt
 
-Build Project
+## Development
 
-`grunt`
+    grunt serve
 
-Run Tests
+Will start a webserver at [localhost:9000](http://localhost:9000/) with a demo of the chart. The chart is automagically update if the source or images change.
+
+## Testing
 
 Open `SpecRunner.html` in your browser and test with jasmine
 
 ### How to use
 
-
 ```javascript
-//Get Version
-astrochart.version;
-
-//say Hello World
-astrochart.hello();
+// TO BE DONE
 ```
 
 ### License
