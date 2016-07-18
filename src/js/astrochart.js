@@ -4,6 +4,15 @@ window.Astrochart = (function() {
   
     var create = function(w, h) {
         var chart = Snap(w, h);
+        var orbitPath;
+
+        Snap.load("/dist/image/zodiac.svg", function(svg) {
+            var zodiac = svg.select("g#zodiac");
+            chart.append(zodiac);
+
+            // Creates the orbit for space objects
+            orbitPath = createOrbitPath(w/2, h/2, 230);
+        });
 
         Snap.load("/dist/image/things.svg", function(svg) {
             loadSpaceObject(svg, "mercury", 3000);
@@ -12,14 +21,33 @@ window.Astrochart = (function() {
             loadSpaceObject(svg, "jupiter", 12000);
         });
 
-        // Path for planets
-        var path = chart.path("M 270, 270 " + 
-                              "m -200, 0 " +
-                              "a 200,200 0 1,0 400,0 " + 
-                              "a 200,200 0 1,0 -400,0");
-        path.attr('fill', 'none');
-        path.attr('stroke', 'red');
-        path.attr('stroke-dasharray', '1,1');
+        function createOrbitPath(cx, cy, r) {
+            
+            if (!String.prototype.format) {
+                String.prototype.format = function() {
+                    var str = this.toString();
+                    if (!arguments.length)
+                        return str;
+                    var args = typeof arguments[0],
+                        args = (("string" == args || "number" == args) ? arguments : arguments[0]);
+
+                    console.log(args)
+                    for (var arg in args)
+                        str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
+                    return str;
+                }
+            }
+
+            var path = chart.path(("M {cx}, {cy} " + 
+                          "m -{r}, 0 " +
+                          "a {r},{r} 0 1,0 {d},0 " + 
+                          "a {r},{r} 0 1,0 -{d},0").format({cx:cx, cy:cy, r:r, d:r*2}));
+            path.attr('fill', 'none');
+            path.attr('stroke', 'red');
+            path.attr('stroke-dasharray', '1,1');
+
+            return path;
+        }
 
 
         function loadSpaceObject(svg, name, animationDelay) {
@@ -49,8 +77,8 @@ window.Astrochart = (function() {
              * @param {Integer} degrees
              */
             Element.prototype.orbit = function(degrees) {
-                var pathLength = path.getTotalLength();
-                var point = path.getPointAtLength(degrees * pathLength / 360 );  
+                var pathLength = orbitPath.getTotalLength();
+                var point = orbitPath.getPointAtLength(degrees * pathLength / 360 );  
 
                 var matrix = new Snap.Matrix();
                 matrix.translate(point.x - 54, point.y - 54);
