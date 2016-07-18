@@ -17,7 +17,7 @@ Build Project:
 
     grunt serve
 
-Will start a webserver at [localhost:9000](http://localhost:9000/) with a demo of the chart. The chart is automagically update if the source or images change.
+Will start a webserver at [localhost:9001](http://localhost:9001/) with a demo of the chart. The chart is automagically update if the source or images change.
 
 ## Testing
 
