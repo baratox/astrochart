@@ -10,8 +10,11 @@
     <script type="text/javascript" src="/src/js/astrochart.js"></script>
     
     <script type="text/javascript">
+        "use strict";
         (function() {
-            Astrochart.create(600, 600);
+            var chart = Astrochart(600, 600);
+            console.log(chart);
+            window.chart = chart;
         })();
     </script>
 </body>

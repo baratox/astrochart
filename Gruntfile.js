@@ -92,7 +92,7 @@ module.exports = function(grunt) {
         watch: {
             // '**' is used to include all subdirectories
             // and subdirectories of subdirectories, and so on, recursively.
-            files: ['src/**/*'],
+            files: ['src/**/*', 'demo/**/*'],
             tasks:["default"],
             options: {
               livereload:LIVERELOAD_PORT
