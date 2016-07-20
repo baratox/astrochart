@@ -12,6 +12,11 @@ window.Astrochart = (function() {
 
             // Creates the orbit for space objects
             orbitPath = createOrbitPath(w/2, h/2, 230);
+            
+            Snap.animate(0, -167, function(value) {
+                zodiac.transform("r" + value);
+            }, 6000);
+
         });
 
         Snap.load("/dist/image/things.svg", function(svg) {
