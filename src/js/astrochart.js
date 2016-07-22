@@ -9,15 +9,18 @@ window.Astrochart = (function(w, h) {
   
     var now = {
         'ascendant': 0,
-        'sun': 0,
-        'mercury': 0, 
-        'venus': 0,
-        'mars': 0,
-        'jupiter': 0,
-        'saturn': 0,
-        'uranus': 0,
-        'neptune': 0,
-        'pluto': 0
+        'houses': [],
+        'planets': {
+            'sun': 0,
+            'mercury': 0, 
+            'venus': 0,
+            'mars': 0,
+            'jupiter': 0,
+            'saturn': 0,
+            'uranus': 0,
+            'neptune': 0,
+            'pluto': 0
+        }
     };
 
 
@@ -33,14 +36,19 @@ window.Astrochart = (function(w, h) {
         });
 
         Snap.load("/dist/image/things.svg", function(svg) {
-            loadSpaceObject(svg, "mercury", 3000);
-            loadSpaceObject(svg, "venus", 5000);
-            loadSpaceObject(svg, "mars", 8000);
-            loadSpaceObject(svg, "jupiter", 12000);
+            for (var planet in now.planets) {
+                loadSpaceObject(svg, planet, Math.random() * 10000 + 3000);
+            }
         });
 
         function loadSpaceObject(svg, name, animationDelay) {
             var object = svg.select("g#" + name);
+            if (!object) {
+                // Create one based on the default planet sprite
+                object = svg.select("g#planet").clone();
+                object.attr({'id': name});
+            }
+
             snap.append(object);
 
             function repeatAnimation() {
