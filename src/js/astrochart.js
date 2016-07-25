@@ -2,11 +2,11 @@
 window.Astrochart = (function(w, h) {
     var version = "0.1.0";
 
+    const DEFAULT_PLANET_SIZE = 108;
+
     var snap;
     var orbit;
 
-    var zodiac;
-  
     var now = {
         'ascendant': 0,
         'houses': [],
@@ -28,7 +28,7 @@ window.Astrochart = (function(w, h) {
         snap = Snap(w, h);
 
         Snap.load("/dist/image/zodiac.svg", function(svg) {
-            zodiac = svg.select("g#zodiac");
+            var zodiac = svg.select("g#zodiac");
             snap.append(zodiac);
 
             // Creates the orbit for space objects
@@ -71,13 +71,17 @@ window.Astrochart = (function(w, h) {
                 var pathLength = orbit.getTotalLength();
                 var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
 
-                var matrix = new Snap.Matrix();
-                matrix.translate(point.x - 54, point.y - 54);
+                var scale = 0.5;
+                var half = scale * DEFAULT_PLANET_SIZE/2;
 
+                var matrix = new Snap.Matrix();
+                matrix.translate(point.x, point.y);
+                matrix.translate(-half, -half);
+                matrix.scale(scale);
+                
                 this.transform(matrix);
             };
         });
-
     };
 
     function createOrbitPath(cx, cy, r) {
@@ -108,9 +112,12 @@ window.Astrochart = (function(w, h) {
 
     function ascendant(degrees) {
         if (degrees !== undefined) {
-            Snap.animate(now.ascendant, degrees, function(value) {
-                zodiac.transform("r" + value);
-            }, 800);
+            var zodiac = snap.select("g#zodiac");
+            if (zodiac) {
+                Snap.animate(now.ascendant, degrees, function(value) {
+                    zodiac.transform("r" + value);
+                }, 800);
+            }
             
             now.ascendant = degrees;
             return this;
