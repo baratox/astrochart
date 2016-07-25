@@ -24,7 +24,7 @@ window.Astrochart = (function(w, h) {
     };
 
 
-    function initialize(w, h) {
+    function _Astrochart(w, h) {
         snap = Snap(w, h);
 
         Snap.load("/dist/image/zodiac.svg", function(svg) {
@@ -51,13 +51,7 @@ window.Astrochart = (function(w, h) {
 
             snap.append(object);
 
-            function repeatAnimation() {
-                Snap.animate(0, 360, function(value) {
-                    object.orbit(value);
-                }, animationDelay, null, repeatAnimation);
-            }
-
-            repeatAnimation();
+            _move(name, now.planets[name]);
         };
 
         Snap.plugin(function(Snap, Element) {
@@ -95,7 +89,6 @@ window.Astrochart = (function(w, h) {
                 var args = typeof arguments[0],
                     args = (("string" == args || "number" == args) ? arguments : arguments[0]);
 
-                console.log(args)
                 for (var arg in args)
                     str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
                 return str;
@@ -120,19 +113,56 @@ window.Astrochart = (function(w, h) {
             }, 800);
             
             now.ascendant = degrees;
+            return this;
 
         } else {
             return now.ascendant;
         }
     };
 
+    function move(planets, degrees) {
+        if (typeof planets === "object") {
+            for (var planet in planets) {
+                _move(planet, planets[planet]);
+            }
+            return this;
 
-    initialize(w !== undefined ? w : 600, 
-               h !== undefined ? h : 600);
+        } else if (typeof planets === "string") {
+            return _move(planets, degrees);
+        }
+    }
+
+    function _move(planet, degrees) {
+        if (now.planets[planet] === undefined) {
+            return false;
+        }
+
+        if (degrees !== undefined) {
+            var element = snap.select("g#" + planet);
+            if (element) {
+                // Run animation if already loaded
+                Snap.animate(now.planets[planet], degrees, function(value) {
+                        element.orbit(degrees);
+                    }, 400);
+            }
+            
+            now.planets[planet] = degrees;
+            return this;
+
+        } else {
+            return now.planets[planet];
+        }
+    }
+
+    // Initialize this instance and return public API.
+    _Astrochart(w !== undefined ? w : 600, 
+                h !== undefined ? h : 600);
 
     return {
         version: version,
         ascendant: ascendant,
+        move: move,
+        snap: snap
     };
 
 });

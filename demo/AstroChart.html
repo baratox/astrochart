@@ -13,6 +13,17 @@
         "use strict";
         (function() {
             var chart = Astrochart(600, 600);
+            chart.ascendant(63).move({
+                'sun': 23.7,
+                'mercury': 42, 
+                'venus': 27,
+                'mars': 12,
+                'jupiter': 250,
+                'saturn': 127,
+                'uranus': 300,
+                'neptune': 80,
+                'pluto': 140.72
+            });
             console.log(chart);
             window.chart = chart;
         })();
