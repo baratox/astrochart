@@ -26,6 +26,11 @@ window.Astrochart = (function(w, h) {
 
     function _Astrochart(w, h) {
         snap = Snap(w, h);
+        snap.attr({ 
+            viewBox: '0 0 600 600',
+            height: '100%',
+            width: '100%' 
+        });
 
         Snap.load("/dist/image/zodiac.svg", function(svg) {
             var zodiac = svg.select("g#zodiac");
