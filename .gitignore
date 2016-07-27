@@ -3,4 +3,5 @@
 node_modules
 lib
 
-dist
+# Distribution files are needed to publish as a bower package.
+# dist
