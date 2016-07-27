@@ -1,7 +1,12 @@
 {
   "name": "astrochart",
   "version": "0.1.0",
+  "main": [
+    "src/js/astrochart.js"
+  ],
   "ignore": [
+    "**/.*",
+    "demo",
     "lib",
     "test",
     "spec",
