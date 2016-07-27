@@ -37,6 +37,10 @@ module.exports = function(grunt) {
          " */\n" +
          "\n",
 
+        // Clean distribution files
+        clean: ["<%= dirs.build %>/**"],
+        
+
         // Copy static files
         copy: {
             main: {
