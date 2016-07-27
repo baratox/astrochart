@@ -40,9 +40,16 @@ module.exports = function(grunt) {
         // Copy static files
         copy: {
             main: {
-                files: [
-                    {expand: true, cwd: "src/image", src: ["*"], dest: "<%= dirs.build %>/image/" },
-                ]
+                files: [{ 
+                    expand: true, 
+                    cwd: "src/image", 
+                    src: ["*"], 
+                    dest: "<%= dirs.build %>/image/" 
+                  }, {
+                    expand: true,
+                    cwd: "<%= dirs.js %>",
+                    src: "astrochart.js",
+                    dest: "<%= dirs.build %>" }]
             }
         },
 
