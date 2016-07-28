@@ -1,8 +1,8 @@
 {
   "name": "astrochart",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": [
-    "src/js/astrochart.js"
+    "dist/astrochart.js"
   ],
   "ignore": [
     "**/.*",
