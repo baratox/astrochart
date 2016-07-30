@@ -1,8 +1,6 @@
 window.Astrochart = (function(w, h) {
     "use strict";
 
-    var version = "0.1.0";
-
     var snap;
     var orbit;
 
@@ -183,7 +181,6 @@ window.Astrochart = (function(w, h) {
 
     return {
         snap: snap,
-        version: version,
         ascendant: ascendant,
         move: move,
         house: house
