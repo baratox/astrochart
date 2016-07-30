@@ -20,15 +20,20 @@
     </style>
 </head>
 <body>
+    <div class="map">
+        <svg></svg>
+    </div>
+
     <script type="text/javascript" src="/lib/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="/lib/Snap.svg/dist/snap.svg.js"></script>
-    <script type="text/javascript" src="/src/js/astrochart.js"></script>
+    <script type="text/javascript" src="/dist/astrochart.js"></script>
     
     <script type="text/javascript">
         "use strict";
         (function() {
             var chart = Astrochart(600, 600);
-            chart.ascendant(63).move({
+            chart.ascendant(63)
+            .move({
                 'sun': 23.7,
                 'mercury': 42, 
                 'venus': 27,
@@ -38,7 +43,10 @@
                 'uranus': 300,
                 'neptune': 80,
                 'pluto': 140.72
+            }).houses({
+                '1': 27.3
             });
+
             console.log(chart);
             window.chart = chart;
         })();

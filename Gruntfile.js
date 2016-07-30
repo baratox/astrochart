@@ -40,6 +40,15 @@ module.exports = function(grunt) {
         // Clean distribution files
         clean: ["<%= dirs.build %>/**"],
         
+        concat: {
+          js: {
+            dest: "<%= dirs.build %>/astrochart.js",
+            src: [
+              "<%= dirs.js %>/*/*.js",
+              "<%= dirs.js %>/astrochart.js"
+            ]
+          }
+        },
 
         // Copy static files
         copy: {
@@ -49,11 +58,7 @@ module.exports = function(grunt) {
                     cwd: "src/image", 
                     src: ["*"], 
                     dest: "<%= dirs.build %>/image/" 
-                  }, {
-                    expand: true,
-                    cwd: "<%= dirs.js %>",
-                    src: "astrochart.js",
-                    dest: "<%= dirs.build %>" }]
+                  }]
             }
         },
 
@@ -65,7 +70,7 @@ module.exports = function(grunt) {
             },
             dist: {
               files: {
-                  "<%= dirs.build %>/astrochart.min.js": "<%= dirs.js %>/astrochart.js"
+                  "<%= dirs.build %>/astrochart.min.js": "<%= dirs.build %>/astrochart.js"
               }
             }
         },
@@ -118,7 +123,7 @@ module.exports = function(grunt) {
     // --------------------------
 
     // Observe changes, concatenate, minify and validate files
-    grunt.registerTask( "default", [ "copy", "uglify", "notify:js" ]);
+    grunt.registerTask( "default", [ "concat", "copy", "uglify", "notify:js" ]);
 
     grunt.registerTask( "serve", [ "default", "connect:main", "watch" ]);
 

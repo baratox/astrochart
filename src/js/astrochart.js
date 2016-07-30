@@ -1,8 +1,7 @@
-"use strict";
 window.Astrochart = (function(w, h) {
-    var version = "0.1.0";
+    "use strict";
 
-    const DEFAULT_PLANET_SIZE = 108;
+    var version = "0.1.0";
 
     var snap;
     var orbit;
@@ -51,7 +50,7 @@ window.Astrochart = (function(w, h) {
             snap.append(zodiac);
 
             // Creates the orbit for space objects
-            orbit = createOrbitPath(w/2, h/2, 230);
+            orbit = snap.createCircularOrbit(w/2, h/2, 230);
 
             var houses = svg.select("g#houses");
             snap.append(houses);
@@ -75,62 +74,6 @@ window.Astrochart = (function(w, h) {
 
             _move(name, now.planets[name]);
         };
-
-        Snap.plugin(function(Snap, Element) {
-            'use strict';
-
-            /**
-             * Rotates a given Snap.Element the given amount of degrees around the center. 
-             * The amount of degrees can be a negative or positive number, depending on 
-             * which way you want to rotate the node. The rotation will be done around 
-             * the central coordinates of the element.
-             *
-             * @method orbit
-             * @public
-             * @param {Integer} degrees
-             */
-            Element.prototype.orbit = function(degrees) {
-                var pathLength = orbit.getTotalLength();
-                var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
-
-                var scale = 0.5;
-                var half = scale * DEFAULT_PLANET_SIZE/2;
-
-                var matrix = new Snap.Matrix();
-                matrix.translate(point.x, point.y);
-                matrix.translate(-half, -half);
-                matrix.scale(scale);
-                
-                this.transform(matrix);
-            };
-        });
-    };
-
-    function createOrbitPath(cx, cy, r) {
-        if (!String.prototype.format) {
-            String.prototype.format = function() {
-                var str = this.toString();
-                if (!arguments.length)
-                    return str;
-                var args = typeof arguments[0],
-                    args = (("string" == args || "number" == args) ? arguments : arguments[0]);
-
-                for (var arg in args)
-                    str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
-                return str;
-            }
-        }
-
-        var path = snap.path(("M {cx}, {cy} " + 
-                      "m -{r}, 0 " +
-                      "a {r},{r} 0 1,0 {d},0 " + 
-                      "a {r},{r} 0 1,0 -{d},0").format({cx:cx, cy:cy, r:r, d:r*2}));
-        path.attr({
-            'id': 'orbit',
-            'fill': 'none'
-        });
-
-        return path;
     };
 
     function ascendant(degrees) {
