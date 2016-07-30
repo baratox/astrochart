@@ -56,10 +56,12 @@ Snap.plugin(function(Snap, Element, Paper) {
     };
 });
 
-window.Astrochart = (function(w, h) {
+window.Astrochart = (function(w, h, overridenSettings) {
     "use strict";
 
-    var version = "0.1.0";
+    var settings = {
+        'sprites-base-url': "/dist/image"
+    }
 
     var snap;
     var orbit;
@@ -95,7 +97,11 @@ window.Astrochart = (function(w, h) {
     };
 
 
-    function _Astrochart(w, h) {
+    function _Astrochart(w, h, overridenSettings) {
+        if (overridenSettings) {
+            settings = $.extend(settings, overridenSettings);
+        }
+
         snap = Snap(w, h);
         snap.attr({ 
             viewBox: '0 0 600 600',
@@ -103,7 +109,7 @@ window.Astrochart = (function(w, h) {
             width: '100%' 
         });
 
-        Snap.load("/dist/image/zodiac.svg", function(svg) {
+        Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
             var zodiac = svg.select("g#zodiac");
             snap.append(zodiac);
 
@@ -115,7 +121,7 @@ window.Astrochart = (function(w, h) {
             snap.append(houses);
         });
 
-        Snap.load("/dist/image/things.svg", function(svg) {
+        Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
             for (var planet in now.planets) {
                 loadSpaceObject(svg, planet, Math.random() * 10000 + 3000);
             }
@@ -237,11 +243,10 @@ window.Astrochart = (function(w, h) {
     }
 
     // Initialize this instance and return public API.
-    _Astrochart(w !== undefined ? w : 600, h);
+    _Astrochart(w !== undefined ? w : 600, h, overridenSettings);
 
     return {
         snap: snap,
-        version: version,
         ascendant: ascendant,
         move: move,
         house: house
