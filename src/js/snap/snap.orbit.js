@@ -40,7 +40,7 @@ Snap.plugin(function(Snap, Element, Paper) {
      * @public
      * @param {Integer} degrees
      */
-    Element.prototype.orbit = function(degrees) {
+    Element.prototype.orbit = function(orbit, degrees) {
         var pathLength = orbit.getTotalLength();
         var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
 

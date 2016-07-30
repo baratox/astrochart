@@ -50,7 +50,8 @@ window.Astrochart = (function(w, h) {
             snap.append(zodiac);
 
             // Creates the orbit for space objects
-            orbit = snap.createCircularOrbit(w/2, h/2, 230);
+            orbit = snap.createCircularOrbit(300, 300, 230);
+            snap.append(orbit);
 
             var houses = svg.select("g#houses");
             snap.append(houses);
@@ -70,6 +71,7 @@ window.Astrochart = (function(w, h) {
                 object.attr({'id': name});
             }
 
+            console.debug("Object", object, "loaded.");
             snap.append(object);
 
             _move(name, now.planets[name]);
@@ -107,7 +109,7 @@ window.Astrochart = (function(w, h) {
             if (element) {
                 // Run animation if already loaded
                 Snap.animate(now.planets[planet], degrees, function(value) {
-                        element.orbit(degrees);
+                        element.orbit(orbit, degrees);
                     }, 400);
             }
             
@@ -177,8 +179,7 @@ window.Astrochart = (function(w, h) {
     }
 
     // Initialize this instance and return public API.
-    _Astrochart(w !== undefined ? w : 600, 
-                h !== undefined ? h : 600);
+    _Astrochart(w !== undefined ? w : 600, h);
 
     return {
         snap: snap,

@@ -31,9 +31,10 @@
     <script type="text/javascript">
         "use strict";
         (function() {
-            var chart = Astrochart(600, 600);
-            chart.ascendant(63)
-            .move({
+            // var chart = Astrochart(600, 600);
+            var chart = Astrochart(".map svg");
+            chart.ascendant(63);
+            chart.move({
                 'sun': 23.7,
                 'mercury': 42, 
                 'venus': 27,
@@ -43,8 +44,6 @@
                 'uranus': 300,
                 'neptune': 80,
                 'pluto': 140.72
-            }).houses({
-                '1': 27.3
             });
 
             console.log(chart);
