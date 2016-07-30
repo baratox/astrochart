@@ -53,6 +53,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
         Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
             var zodiac = svg.select("g#zodiac");
+            zodiac.transform("r" + now.ascendant);
             snap.append(zodiac);
 
             // Creates the orbit for space objects
