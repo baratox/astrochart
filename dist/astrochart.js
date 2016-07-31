@@ -85,6 +85,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
         },
         'planets': {
             'sun': 0,
+            'moon': 0,
             'mercury': 0, 
             'venus': 0,
             'mars': 0,
