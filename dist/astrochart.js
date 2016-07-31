@@ -111,8 +111,8 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
         Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
             var zodiac = svg.select("g#zodiac");
-            zodiac.transform("r" + now.ascendant);
             snap.append(zodiac);
+            ascendant(now.ascendant);
 
             // Creates the orbit for space objects
             orbit = snap.createCircularOrbit(300, 300, 230);
@@ -147,8 +147,9 @@ window.Astrochart = (function(w, h, overridenSettings) {
         if (degrees !== undefined) {
             var zodiac = snap.select("g#zodiac");
             if (zodiac) {
-                Snap.animate(now.ascendant, degrees, function(value) {
-                    zodiac.transform("r" + value);
+                // Sprite is rotated 105º clockwise
+                Snap.animate(now.ascendant - 105, degrees - 105, function(value) {
+                    zodiac.transform("r" + value + ",300,300");
                 }, 800);
             }
             
