@@ -78,7 +78,6 @@ window.Astrochart = (function(w, h, overridenSettings) {
                 object.attr({'id': name});
             }
 
-            console.debug("Object", object, "loaded.");
             snap.append(object);
 
             _move(name, now.planets[name]);
@@ -94,8 +93,14 @@ window.Astrochart = (function(w, h, overridenSettings) {
                     zodiac.transform("r" + value + ",300,300");
                 }, 800);
             }
-            
+
             now.ascendant = degrees;
+
+            // Reposition the planets now that the zodiac changed.
+            for (var planet in now.planets) {
+                _move(planet, now.planets[planet]);
+            }
+            
             return this;
 
         } else {
@@ -115,9 +120,17 @@ window.Astrochart = (function(w, h, overridenSettings) {
         if (degrees !== undefined) {
             var element = snap.select("g#" + planet);
             if (element) {
+                var angleFrom = now.planets[planet] - now.ascendant,
+                    angleTo = degrees - now.ascendant;
+
+                if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
+                if (angleTo < 0) { angleTo = 360 + angleTo; }
+
+                console.log("Moving", planet, "to", degrees, "(", angleFrom, "to", angleTo, ")");
+                
                 // Run animation if already loaded
-                Snap.animate(now.planets[planet], degrees, function(value) {
-                        element.orbit(orbit, degrees);
+                Snap.animate(angleFrom, angleTo, function(value) {
+                        element.orbit(orbit, value);
                     }, 400);
             }
             
