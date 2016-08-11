@@ -45,7 +45,8 @@ module.exports = function(grunt) {
             dest: "<%= dirs.build %>/astrochart.js",
             src: [
               "<%= dirs.js %>/*/*.js",
-              "<%= dirs.js %>/astrochart.js"
+              "<%= dirs.js %>/astrochart.js",
+              "<%= dirs.js %>/astrochart.*.js"
             ]
           }
         },

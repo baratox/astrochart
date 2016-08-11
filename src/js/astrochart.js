@@ -8,9 +8,10 @@ window.Astrochart = (function(w, h, overridenSettings) {
     var snap;
     var orbit;
 
+    var theme;
+
     var now = {
         'ascendant': 0,
-        'mc': 270,
         'houses': { 
             '1' : 30,
             '2' : 60,
@@ -52,17 +53,25 @@ window.Astrochart = (function(w, h, overridenSettings) {
             width: '100%' 
         });
 
+        theme = new Astrochart.AstrochartTheme(snap);
+
         Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
+            // TODO Load everything from the sprites file.
             var zodiac = svg.select("g#zodiac");
-            snap.append(zodiac);
-            ascendant(now.ascendant);
+            snap.append(svg);
 
             // Creates the orbit for space objects
             orbit = snap.createCircularOrbit(300, 300, 230);
             snap.append(orbit);
 
-            var houses = svg.select("g#houses");
-            snap.append(houses);
+            ascendant(now.ascendant);
+            move(now.planets);
+            house(now.houses);
+
+            console.debug("Finished loading zodiac.svg.");
+
+            // var houses = svg.select("g#houses");
+            // snap.append(houses);
         });
 
         Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
@@ -87,21 +96,9 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
     function ascendant(degrees) {
         if (degrees !== undefined) {
-            var zodiac = snap.select("g#zodiac");
-            if (zodiac) {
-                // Sprite is rotated 105º clockwise
-                Snap.animate(now.ascendant - 105, degrees - 105, function(value) {
-                    zodiac.transform("r" + value + ",300,300");
-                }, 800);
-            }
-
+            theme.ascendant(degrees);
             now.ascendant = degrees;
-
-            // Reposition the planets now that the zodiac changed.
-            for (var planet in now.planets) {
-                _move(planet, now.planets[planet]);
-            }
-            
+           
             return this;
 
         } else {
@@ -119,33 +116,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
         }
 
         if (degrees !== undefined) {
-            var element = snap.select("g#" + planet);
-            if (element) {
-                var angleFrom = now.planets[planet] - now.ascendant,
-                    angleTo = degrees - now.ascendant;
-
-                if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
-                if (angleTo < 0) { angleTo = 360 + angleTo; }
-
-                console.log("Moving", planet, "to", degrees, "(", angleFrom, "to", angleTo, ")");
-                
-                // Run animation if already loaded
-                Snap.animate(angleFrom, angleTo, function(value) {
-                        element.orbit(orbit, value);
-                    }, 400);
-            }
-            
+            theme.astro(planet, degrees);
             now.planets[planet] = degrees;
             return this;
 
         } else {
             return now.planets[planet];
         }
-    }
+    };
 
     function house(houses, degrees) {
         return iterateIfCollection(houses, degrees, _house);
-    }
+    };
 
     function _house(house, degrees) {
         if (now.houses[house] === undefined) {
@@ -153,52 +135,27 @@ window.Astrochart = (function(w, h, overridenSettings) {
         }
 
         if (degrees !== undefined) {
-            var houseElements = { 
-                '1': { id: 'house-1' },
-                '2': { id: 'house-2' },
-                '3': { id: 'mc' },
-                '4': { id: 'house-4' },
-                '5': { id: 'house-5' },
-                '6': { }, // Descendant is fixed
-                '7': { id: 'house-1' },
-                '8': { id: 'house-2' },
-                '9': { id: 'mc' },
-                '10': { id: 'house-4' },
-                '11': { id: 'house-5' },
-                '12': { } // Ascendant is fixed
-            }
-
-            var element = houseElements[house].id !== undefined ? 
-                            snap.select('#' + houseElements[house].id) : null;
-            if (element) {
-                var matrix = new Snap.Matrix()
-                matrix.rotate(now.houses[house] - degrees, 300, 300);
-                matrix.add(element.transform().localMatrix);
-                element.transform(matrix);
-
-                console.log(matrix.toTransformString());
-            }
-            
+            theme.house(house, degrees);
             now.houses[house] = degrees;
             return this;
 
         } else {
             return now.houses[house];
         }
-    }
+    };
 
     function iterateIfCollection(argument, parameter, callback) {
         if (typeof argument === "object") {
+
             for (var i in argument) {
                 callback(i, argument[i]);
             }
             return this;
 
-        } else if (typeof argument === "string") {
+        } else if (typeof argument === "string" || typeof argument === "number") {
             return callback(argument, parameter);
         }
-
-    }
+    };
 
     // Initialize this instance and return public API.
     _Astrochart(w !== undefined ? w : 600, h, overridenSettings);

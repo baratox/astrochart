@@ -66,9 +66,10 @@ window.Astrochart = (function(w, h, overridenSettings) {
     var snap;
     var orbit;
 
+    var theme;
+
     var now = {
         'ascendant': 0,
-        'mc': 270,
         'houses': { 
             '1' : 30,
             '2' : 60,
@@ -110,17 +111,25 @@ window.Astrochart = (function(w, h, overridenSettings) {
             width: '100%' 
         });
 
+        theme = new Astrochart.AstrochartTheme(snap);
+
         Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
+            // TODO Load everything from the sprites file.
             var zodiac = svg.select("g#zodiac");
-            snap.append(zodiac);
-            ascendant(now.ascendant);
+            snap.append(svg);
 
             // Creates the orbit for space objects
             orbit = snap.createCircularOrbit(300, 300, 230);
             snap.append(orbit);
 
-            var houses = svg.select("g#houses");
-            snap.append(houses);
+            ascendant(now.ascendant);
+            move(now.planets);
+            house(now.houses);
+
+            console.debug("Finished loading zodiac.svg.");
+
+            // var houses = svg.select("g#houses");
+            // snap.append(houses);
         });
 
         Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
@@ -145,21 +154,9 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
     function ascendant(degrees) {
         if (degrees !== undefined) {
-            var zodiac = snap.select("g#zodiac");
-            if (zodiac) {
-                // Sprite is rotated 105º clockwise
-                Snap.animate(now.ascendant - 105, degrees - 105, function(value) {
-                    zodiac.transform("r" + value + ",300,300");
-                }, 800);
-            }
-
+            theme.ascendant(degrees);
             now.ascendant = degrees;
-
-            // Reposition the planets now that the zodiac changed.
-            for (var planet in now.planets) {
-                _move(planet, now.planets[planet]);
-            }
-            
+           
             return this;
 
         } else {
@@ -177,33 +174,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
         }
 
         if (degrees !== undefined) {
-            var element = snap.select("g#" + planet);
-            if (element) {
-                var angleFrom = now.planets[planet] - now.ascendant,
-                    angleTo = degrees - now.ascendant;
-
-                if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
-                if (angleTo < 0) { angleTo = 360 + angleTo; }
-
-                console.log("Moving", planet, "to", degrees, "(", angleFrom, "to", angleTo, ")");
-                
-                // Run animation if already loaded
-                Snap.animate(angleFrom, angleTo, function(value) {
-                        element.orbit(orbit, value);
-                    }, 400);
-            }
-            
+            theme.astro(planet, degrees);
             now.planets[planet] = degrees;
             return this;
 
         } else {
             return now.planets[planet];
         }
-    }
+    };
 
     function house(houses, degrees) {
         return iterateIfCollection(houses, degrees, _house);
-    }
+    };
 
     function _house(house, degrees) {
         if (now.houses[house] === undefined) {
@@ -211,52 +193,27 @@ window.Astrochart = (function(w, h, overridenSettings) {
         }
 
         if (degrees !== undefined) {
-            var houseElements = { 
-                '1': { id: 'house-1' },
-                '2': { id: 'house-2' },
-                '3': { id: 'mc' },
-                '4': { id: 'house-4' },
-                '5': { id: 'house-5' },
-                '6': { }, // Descendant is fixed
-                '7': { id: 'house-1' },
-                '8': { id: 'house-2' },
-                '9': { id: 'mc' },
-                '10': { id: 'house-4' },
-                '11': { id: 'house-5' },
-                '12': { } // Ascendant is fixed
-            }
-
-            var element = houseElements[house].id !== undefined ? 
-                            snap.select('#' + houseElements[house].id) : null;
-            if (element) {
-                var matrix = new Snap.Matrix()
-                matrix.rotate(now.houses[house] - degrees, 300, 300);
-                matrix.add(element.transform().localMatrix);
-                element.transform(matrix);
-
-                console.log(matrix.toTransformString());
-            }
-            
+            theme.house(house, degrees);
             now.houses[house] = degrees;
             return this;
 
         } else {
             return now.houses[house];
         }
-    }
+    };
 
     function iterateIfCollection(argument, parameter, callback) {
         if (typeof argument === "object") {
+
             for (var i in argument) {
                 callback(i, argument[i]);
             }
             return this;
 
-        } else if (typeof argument === "string") {
+        } else if (typeof argument === "string" || typeof argument === "number") {
             return callback(argument, parameter);
         }
-
-    }
+    };
 
     // Initialize this instance and return public API.
     _Astrochart(w !== undefined ? w : 600, h, overridenSettings);
@@ -269,3 +226,118 @@ window.Astrochart = (function(w, h, overridenSettings) {
     };
 
 });
+
+Astrochart.AstrochartTheme = function(svg) {
+    this.svg = svg;
+    
+    this.rotation = {
+        'zodiac': 105,
+        'houses': { '1' : 30, '2' : 60, '3' : 90, '4' : 120, '5' : 150, '6' : 180,
+                    '7' : 210, '8' : 240, '9' : 270, '10' : 300, '11' : 330, '12' : 360 },
+        'planets': {
+            'sun': 0,
+            'moon': 0,
+            'mercury': 0, 
+            'venus': 0,
+            'mars': 0,
+            'jupiter': 0,
+            'saturn': 0,
+            'uranus': 0,
+            'neptune': 0,
+            'pluto': 0 
+        }
+    };
+
+    this.houses = { 
+        '1': { id: 'house-1' },
+        '2': { id: 'house-2' },
+        '3': { id: 'mc' },
+        '4': { id: 'house-4' },
+        '5': { id: 'house-5' },
+        '6': { }, // Descendant is fixed
+        '7': { id: 'house-1' },
+        '8': { id: 'house-2' },
+        '9': { id: 'mc' },
+        '10': { id: 'house-4' },
+        '11': { id: 'house-5' },
+        '12': { } // Ascendant is fixed
+    };
+
+    /**
+     * Gets the absolute rotation angle (0º at three o'clock) 
+     * for the given zodiac-originated angle.
+     * - zodiac: Zodiac-originated angle, with 0º at the 
+     *           start of Aries.
+     */
+    this._rotate = function(zodiac) {
+        return zodiac - this.rotation.zodiac;
+    };
+};
+
+Astrochart.AstrochartTheme.prototype = {
+    /**
+     * Rotates the wheel so that given angle 'zodiac' is at 180º.
+     * - zodiac: Zodiac-originated angle, with 0º at the 
+     *           start of Aries.
+     */
+    "ascendant": function(zodiac) {
+        // Sprite is rotated 105º clockwise
+        var angleFrom = this.rotation.zodiac - 105;
+        var angleTo = zodiac - 105;
+
+        console.debug("Rotating zodiac from", angleFrom, "to", angleTo);
+
+
+        if (angleFrom != angleTo) {
+            var wheel = this.svg.select("g#zodiac");
+            if (wheel) {
+                // TODO Rotate everything else too
+                Snap.animate(angleFrom, angleTo, function(value) {
+                    wheel.transform("r" + value + ",300,300");
+                }, 800);
+                
+                this.rotation.zodiac = zodiac;
+            }
+        }
+    },
+
+    "house": function(house, zodiac) {
+        var fixed = this._rotate(zodiac);
+        if (this.houses[house].id !== undefined) {
+            var rotation = this.rotation['houses'][house] - fixed;
+            console.debug("Rotating house", house, 'to', zodiac, " (", fixed, "). Rotation:", rotation);
+
+            var element = this.svg.select('#' + this.houses[house].id);
+            if (element) {
+                var matrix = new Snap.Matrix();
+                matrix.rotate(rotation, 300, 300);
+                matrix.add(element.transform().localMatrix);
+                element.transform(matrix);
+
+                this.rotation['houses'][house] = fixed;
+            } else {
+                console.warn("Nothing to move");
+            }
+        }
+
+    },
+
+    "astro": function(name, zodiac) {
+        var angleFrom = this._rotate(this.rotation.planets[name]),
+            angleTo = zodiac;
+        
+        console.debug("Moving", name, "from", angleFrom, "to", angleTo);
+
+        var element = this.svg.select("g#" + name);
+        if (element) {
+            // if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
+            // if (angleTo < 0) { angleTo = 360 + angleTo; }
+            
+            // Run animation if already loaded
+            Snap.animate(angleFrom, angleTo, function(value) {
+                    element.orbit(orbit, value);
+                }, 400);
+        }
+
+    }
+};
