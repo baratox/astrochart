@@ -114,22 +114,19 @@ window.Astrochart = (function(w, h, overridenSettings) {
         theme = new Astrochart.AstrochartTheme(snap);
 
         Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
-            // TODO Load everything from the sprites file.
-            var zodiac = svg.select("g#zodiac");
+            // Add everything from the sprites file.
             snap.append(svg);
 
             // Creates the orbit for space objects
             orbit = snap.createCircularOrbit(300, 300, 230);
             snap.append(orbit);
 
+            // Refresh theme if data changed before loading was complete.
             ascendant(now.ascendant);
             move(now.planets);
             house(now.houses);
 
             console.debug("Finished loading zodiac.svg.");
-
-            // var houses = svg.select("g#houses");
-            // snap.append(houses);
         });
 
         Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
