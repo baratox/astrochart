@@ -85,7 +85,7 @@ Astrochart.AstrochartTheme.prototype = {
                 matrix.add(element.transform().localMatrix);
                 element.transform(matrix);
 
-                this.rotation['houses'][house] = fixed;
+                this.rotation.houses[house] = fixed;
             } else {
                 console.warn("Nothing to move");
             }
@@ -94,20 +94,22 @@ Astrochart.AstrochartTheme.prototype = {
     },
 
     "astro": function(name, zodiac) {
-        var angleFrom = this._rotate(this.rotation.planets[name]),
-            angleTo = zodiac;
+        var angleFrom = this.rotation.planets[name],
+            angleTo = this._rotate(zodiac);
         
         console.debug("Moving", name, "from", angleFrom, "to", angleTo);
 
         var element = this.svg.select("g#" + name);
         if (element) {
-            // if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
-            // if (angleTo < 0) { angleTo = 360 + angleTo; }
+            if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
+            if (angleTo < 0) { angleTo = 360 + angleTo; }
             
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
                     element.orbit(orbit, value);
                 }, 400);
+
+            this.rotation.planets[name] = angleTo;
         }
 
     }
