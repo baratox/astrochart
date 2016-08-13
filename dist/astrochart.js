@@ -231,6 +231,8 @@ Astrochart.AstrochartTheme = function(svg) {
         'zodiac': 105,
         'houses': { '1' : 30, '2' : 60, '3' : 90, '4' : 120, '5' : 150, '6' : 180,
                     '7' : 210, '8' : 240, '9' : 270, '10' : 300, '11' : 330, '12' : 360 },
+        'house-texts': { '1' : 45, '2' : 75, '3' : 105, '4' : 135, '5' : 165, '6' : 195,
+                         '7' : 225, '8' : 255, '9' : 285, '10' : 315, '11' : 345, '12' : 375 },
         'planets': {
             'sun': 0,
             'moon': 0,
@@ -246,18 +248,18 @@ Astrochart.AstrochartTheme = function(svg) {
     };
 
     this.houses = { 
-        '1': { id: 'house-1' },
-        '2': { id: 'house-2' },
-        '3': { id: 'mc' },
-        '4': { id: 'house-4' },
-        '5': { id: 'house-5' },
-        '6': { }, // Descendant is fixed
-        '7': { id: 'house-1' },
-        '8': { id: 'house-2' },
-        '9': { id: 'mc' },
-        '10': { id: 'house-4' },
-        '11': { id: 'house-5' },
-        '12': { } // Ascendant is fixed
+        '1': { text: 'house-1-text', id: 'house-1', },
+        '2': { text: 'house-2-text', id: 'house-2' },
+        '3': { text: 'house-3-text', id: 'mc' },
+        '4': { text: 'house-4-text', id: 'house-4' },
+        '5': { text: 'house-5-text', id: 'house-5' },
+        '6': { text: 'house-6-text' }, // Descendant is fixed
+        '7': { text: 'house-7-text', id: 'house-1' },
+        '8': { text: 'house-8-text', id: 'house-2' },
+        '9': { text: 'house-9-text', id: 'mc' },
+        '10': { text: 'house-10-text', id: 'house-4' },
+        '11': { text: 'house-11-text', id: 'house-5' },
+        '12': { text: 'house-12-text' } // Ascendant is fixed
     };
 
     /**
@@ -268,6 +270,26 @@ Astrochart.AstrochartTheme = function(svg) {
      */
     this._rotate = function(zodiac) {
         return zodiac - this.rotation.zodiac;
+    };
+
+    this._centerHouseText = function(house) {
+        var element = this.svg.select('#' + this.houses[house].text);
+        if (element) {
+            var next = parseInt(house) < 12 ? parseInt(house) + 1 : 1;
+            var center = this.rotation.houses[house] + (this.rotation.houses[next] - this.rotation.houses[house]) / 2;
+            console.log("Centering text for house", house, "to", center, next);
+
+            var rotation = center - this.rotation["house-texts"][house];
+            this.rotation["house-texts"][house] = center;
+
+            var matrix = new Snap.Matrix();
+            matrix.rotate(rotation, 300, 300);
+            matrix.add(element.transform().localMatrix);
+            element.transform(matrix);
+
+        } else {
+            console.warn("No text for house", house);
+        }
     };
 };
 
@@ -310,6 +332,8 @@ Astrochart.AstrochartTheme.prototype = {
                 matrix.rotate(rotation, 300, 300);
                 matrix.add(element.transform().localMatrix);
                 element.transform(matrix);
+
+                this._centerHouseText(house);
 
                 this.rotation.houses[house] = fixed;
             } else {
