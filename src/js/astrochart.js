@@ -60,7 +60,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
             snap.append(svg);
 
             // Creates the orbit for space objects
-            orbit = snap.createCircularOrbit(300, 300, 230);
+            orbit = snap.createCircularOrbit(300, 300, 198);
             snap.append(orbit);
 
             // Refresh theme if data changed before loading was complete.
