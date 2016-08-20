@@ -2,9 +2,7 @@
 
 
 module.exports = function(grunt) {
-    // This is the default port that livereload listens on;
-    // change it if you configure livereload to use another port.
-    var LIVERELOAD_PORT = 35729;
+    var LIVERELOAD_PORT = 35730;
 
     require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
     var serveStatic = require('serve-static');
