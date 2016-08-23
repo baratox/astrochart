@@ -266,7 +266,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         return zodiac - _rotation.zodiac;
     };
 
-    var _fixed = function(number) {
+    // Rounds to avoid complex numbers when calculating
+    var _round = function(number) {
         return number.toFixed(5);
     }
 
@@ -296,15 +297,14 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      *           start of Aries.
      */
     var ascendant = function(zodiac) {
-        // Sprite is rotated 105º clockwise
-        var angleFrom = _rotation.zodiac - 105;
-        var angleTo = zodiac - 105;
+        var wheel = _svg.select("g#zodiac");
+        if (wheel) {
+            // Sprite is rotated 105º clockwise
+            var angleFrom = _rotation.zodiac - 105;
+            var angleTo = zodiac - 105;
+            if (angleFrom != angleTo) {
+                console.debug("Rotating zodiac to", zodiac);
 
-        console.debug("Rotating zodiac to", zodiac);
-
-        if (angleFrom != angleTo) {
-            var wheel = _svg.select("g#zodiac");
-            if (wheel) {
                 // TODO Rotate everything else too
                 Snap.animate(angleFrom, angleTo, function(value) {
                     wheel.transform("r" + value + ",300,300");
@@ -312,18 +312,22 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 
                 _rotation.zodiac = zodiac;
             }
+
+        } else {
+            throw "not ready";
         }
     };
 
     var house = function(house, zodiac) {
-        var fixed = _fixed(_rotate(zodiac));
         if (_houses[house].id !== undefined) {
-            var rotation = _rotation.houses[house] - fixed;
-
             var element = _svg.select('#' + _houses[house].id);
             if (element) {
+                var fixed = _round(_rotate(zodiac));
+                var rotation = _rotation.houses[house] - fixed;
+                
                 console.debug("Rotating house", house, 'to', zodiac, " (", fixed, "). Was:", _rotation.houses[house]);
                 console.debug("Rotation:", rotation);
+                
                 var matrix = new Snap.Matrix();
                 matrix.rotate(rotation, 300, 300);
                 matrix.add(element.transform().localMatrix);
@@ -332,23 +336,23 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 _centerHouseText(house);
 
                 _rotation.houses[house] = fixed;
+
             } else {
-                console.warn("Nothing to move");
+                throw "not ready";
             }
         }
-
     };
 
     var astro = function(name, zodiac) {
-        var angleFrom = _rotation.planets[name],
-            angleTo = _rotate(zodiac);
-        
-        console.debug("Moving", name, "from", angleFrom, "to", angleTo);
-
         var element = _svg.select("g#" + name);
         if (element) {
+            var angleFrom = _rotation.planets[name],
+                angleTo = _rotate(zodiac);
+            
             if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
             if (angleTo < 0) { angleTo = 360 + angleTo; }
+            
+            console.debug("Moving", name, "from", angleFrom, "to", angleTo);
             
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
@@ -356,6 +360,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 }, 400);
 
             _rotation.planets[name] = angleTo;
+        } else {
+            throw "not ready";
         }
     };
 
