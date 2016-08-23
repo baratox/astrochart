@@ -53,46 +53,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
             width: '100%' 
         });
 
-        theme = new Astrochart.AstrochartTheme(snap);
-
-        Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
-            // Add everything from the sprites file.
-            snap.append(svg);
-
-            // Creates the orbit for space objects
-            orbit = snap.createCircularOrbit(300, 300, 198);
-            snap.append(orbit);
-
-            // Refresh theme if data changed before loading was complete.
-            theme.ascendant(now.ascendant);
-            for (var astro in now.planets) {
-                theme.astro(astro, now.planets[astro]);
-            }
-            // for (var house in now.houses) {
-            //     theme.house(house, now.houses[house]);
-            // }
-
-            console.debug("Finished loading zodiac.svg.");
-        });
-
-        Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
-            for (var planet in now.planets) {
-                loadSpaceObject(svg, planet, Math.random() * 10000 + 3000);
-            }
-        });
-
-        function loadSpaceObject(svg, name, animationDelay) {
-            var object = svg.select("g#" + name);
-            if (!object) {
-                // Create one based on the default planet sprite
-                object = svg.select("g#planet").clone();
-                object.attr({'id': name});
-            }
-
-            snap.append(object);
-
-            _move(name, now.planets[name]);
-        };
+        theme = new Astrochart.AstrochartTheme(snap, settings);
     };
 
     function ascendant(degrees) {

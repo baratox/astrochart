@@ -1,4 +1,4 @@
-Astrochart.AstrochartTheme = function(_svg) {
+Astrochart.AstrochartTheme = function(_svg, _settings) {
     var _rotation = {
         'zodiac': 105,
         'houses': { '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, '7' : 180,
@@ -33,6 +33,37 @@ Astrochart.AstrochartTheme = function(_svg) {
         '11': { text: 'house-10-text', id: 'house-5' },
         '12': { text: 'house-11-text', id: 'house-6' }
     };
+
+    Snap.load(_settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
+        // Add everything from the sprites file.
+        _svg.append(svg);
+
+        // Creates the orbit for space objects
+        orbit = _svg.createCircularOrbit(300, 300, 198);
+        _svg.append(orbit);
+
+        console.debug("Finished loading zodiac.svg.");
+    });
+
+    Snap.load(_settings['sprites-base-url'] + "/things.svg", function(svg) {
+        for (var planet in _rotation.planets) {
+            loadSpaceObject(svg, planet, Math.random() * 10000 + 3000);
+        }
+
+        function loadSpaceObject(svg, name, animationDelay) {
+            var object = svg.select("g#" + name);
+            if (!object) {
+                // Create one based on the default planet sprite
+                object = svg.select("g#planet").clone();
+                object.attr({'id': name});
+            }
+
+            _svg.append(object);
+
+            object.orbit(orbit, 0);
+        };
+    });
+
 
     /**
      * Gets the absolute rotation angle (0º at three o'clock) 
