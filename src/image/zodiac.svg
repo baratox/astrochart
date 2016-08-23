@@ -57,9 +57,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1479719"
-     inkscape:cx="123.08845"
-     inkscape:cy="85.564049"
-     inkscape:current-layer="layer1"
+     inkscape:cx="312.8769"
+     inkscape:cy="294.6284"
+     inkscape:current-layer="layer2"
      inkscape:document-units="px"
      showgrid="false"
      inkscape:window-width="1280"
@@ -234,7 +234,7 @@
      style="display:inline">
     <rect
        style="fill:#999999;fill-opacity:1;stroke:none"
-       id="house-4"
+       id="house-5"
        width="640.40302"
        height="24.794653"
        x="-47.140453"
@@ -252,7 +252,7 @@
        x="-47.140453"
        height="24.794653"
        width="640.40302"
-       id="house-5"
+       id="house-6"
        style="fill:#999999;fill-opacity:1;stroke:none" />
     <rect
        inkscape:label=""
@@ -263,11 +263,11 @@
        x="-47.140453"
        height="24.794653"
        width="640.40302"
-       id="house-1"
+       id="house-2"
        style="fill:#999999;fill-opacity:1;stroke:none" />
     <rect
        style="fill:#999999;fill-opacity:1;stroke:none"
-       id="house-2"
+       id="house-3"
        width="640.40302"
        height="24.794653"
        x="-47.140453"

@@ -13,18 +13,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
     var now = {
         'ascendant': 0,
         'houses': { 
-            '1' : 30,
-            '2' : 60,
-            '3' : 90,
-            '4' : 120,
-            '5' : 150,
-            '6' : 180,
-            '7' : 210,
-            '8' : 240,
-            '9' : 270,
-            '10' : 300,
-            '11' : 330,
-            '12' : 360
+            '1' : 0,
+            '2' : 30,
+            '3' : 60,
+            '4' : 90,
+            '5' : 120,
+            '6' : 150,
+            '7' : 180,
+            '8' : 210,
+            '9' : 240,
+            '10' : 270,
+            '11' : 300,
+            '12' : 330
         },
         'planets': {
             'sun': 0,
@@ -64,9 +64,13 @@ window.Astrochart = (function(w, h, overridenSettings) {
             snap.append(orbit);
 
             // Refresh theme if data changed before loading was complete.
-            ascendant(now.ascendant);
-            move(now.planets);
-            house(now.houses);
+            theme.ascendant(now.ascendant);
+            for (var astro in now.planets) {
+                theme.astro(astro, now.planets[astro]);
+            }
+            // for (var house in now.houses) {
+            //     theme.house(house, now.houses[house]);
+            // }
 
             console.debug("Finished loading zodiac.svg.");
         });

@@ -71,18 +71,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
     var now = {
         'ascendant': 0,
         'houses': { 
-            '1' : 30,
-            '2' : 60,
-            '3' : 90,
-            '4' : 120,
-            '5' : 150,
-            '6' : 180,
-            '7' : 210,
-            '8' : 240,
-            '9' : 270,
-            '10' : 300,
-            '11' : 330,
-            '12' : 360
+            '1' : 0,
+            '2' : 30,
+            '3' : 60,
+            '4' : 90,
+            '5' : 120,
+            '6' : 150,
+            '7' : 180,
+            '8' : 210,
+            '9' : 240,
+            '10' : 270,
+            '11' : 300,
+            '12' : 330
         },
         'planets': {
             'sun': 0,
@@ -122,9 +122,13 @@ window.Astrochart = (function(w, h, overridenSettings) {
             snap.append(orbit);
 
             // Refresh theme if data changed before loading was complete.
-            ascendant(now.ascendant);
-            move(now.planets);
-            house(now.houses);
+            theme.ascendant(now.ascendant);
+            for (var astro in now.planets) {
+                theme.astro(astro, now.planets[astro]);
+            }
+            // for (var house in now.houses) {
+            //     theme.house(house, now.houses[house]);
+            // }
 
             console.debug("Finished loading zodiac.svg.");
         });
@@ -227,8 +231,8 @@ window.Astrochart = (function(w, h, overridenSettings) {
 Astrochart.AstrochartTheme = function(_svg) {
     var _rotation = {
         'zodiac': 105,
-        'houses': { '1' : 30, '2' : 60, '3' : 90, '4' : 120, '5' : 150, '6' : 180,
-                    '7' : 210, '8' : 240, '9' : 270, '10' : 300, '11' : 330, '12' : 360 },
+        'houses': { '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, '7' : 180,
+                    '8' : 210, '9' : 240, '10' : 270, '11' : 300, '12' : 330 },
         'house-texts': { '1' : 45, '2' : 75, '3' : 105, '4' : 135, '5' : 165, '6' : 195,
                          '7' : 225, '8' : 255, '9' : 285, '10' : 315, '11' : 345, '12' : 375 },
         'planets': {
@@ -246,18 +250,18 @@ Astrochart.AstrochartTheme = function(_svg) {
     };
 
     var _houses = { 
-        '1': { text: 'house-1-text', id: 'house-1', },
-        '2': { text: 'house-2-text', id: 'house-2' },
-        '3': { text: 'house-3-text', id: 'mc' },
-        '4': { text: 'house-4-text', id: 'house-4' },
-        '5': { text: 'house-5-text', id: 'house-5' },
-        '6': { text: 'house-6-text' }, // Descendant is fixed
-        '7': { text: 'house-7-text', id: 'house-1' },
-        '8': { text: 'house-8-text', id: 'house-2' },
-        '9': { text: 'house-9-text', id: 'mc' },
-        '10': { text: 'house-10-text', id: 'house-4' },
-        '11': { text: 'house-11-text', id: 'house-5' },
-        '12': { text: 'house-12-text' } // Ascendant is fixed
+        '1': { text: 'house-12-text' }, // Ascendant is fixed
+        '2': { text: 'house-1-text', id: 'house-2', },
+        '3': { text: 'house-2-text', id: 'house-3' },
+        '4': { text: 'house-3-text', id: 'mc' },
+        '5': { text: 'house-4-text', id: 'house-5' },
+        '6': { text: 'house-5-text', id: 'house-6' },
+        '7': { text: 'house-6-text' }, // Descendant is fixed
+        '8': { text: 'house-7-text', id: 'house-2' },
+        '9': { text: 'house-8-text', id: 'house-3' },
+        '10': { text: 'house-9-text', id: 'mc' },
+        '11': { text: 'house-10-text', id: 'house-5' },
+        '12': { text: 'house-11-text', id: 'house-6' }
     };
 
     /**
@@ -269,6 +273,10 @@ Astrochart.AstrochartTheme = function(_svg) {
     var _rotate = function(zodiac) {
         return zodiac - _rotation.zodiac;
     };
+
+    var _fixed = function(number) {
+        return number.toFixed(5);
+    }
 
     var _centerHouseText = function(house) {
         var element = _svg.select('#' + _houses[house].text);
@@ -300,7 +308,7 @@ Astrochart.AstrochartTheme = function(_svg) {
         var angleFrom = _rotation.zodiac - 105;
         var angleTo = zodiac - 105;
 
-        console.debug("Rotating zodiac from", angleFrom, "to", angleTo);
+        console.debug("Rotating zodiac to", zodiac);
 
         if (angleFrom != angleTo) {
             var wheel = _svg.select("g#zodiac");
@@ -316,13 +324,14 @@ Astrochart.AstrochartTheme = function(_svg) {
     };
 
     var house = function(house, zodiac) {
-        var fixed = _rotate(zodiac);
+        var fixed = _fixed(_rotate(zodiac));
         if (_houses[house].id !== undefined) {
-            var rotation = _rotation['houses'][house] - fixed;
-            console.debug("Rotating house", house, 'to', zodiac, " (", fixed, "). Rotation:", rotation);
+            var rotation = _rotation.houses[house] - fixed;
 
             var element = _svg.select('#' + _houses[house].id);
             if (element) {
+                console.debug("Rotating house", house, 'to', zodiac, " (", fixed, "). Was:", _rotation.houses[house]);
+                console.debug("Rotation:", rotation);
                 var matrix = new Snap.Matrix();
                 matrix.rotate(rotation, 300, 300);
                 matrix.add(element.transform().localMatrix);
