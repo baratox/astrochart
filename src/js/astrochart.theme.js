@@ -145,6 +145,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 _centerHouseText(house);
 
                 _rotation.houses[house] = fixed;
+                _rotation.houses[parseInt(house) > 6 ? parseInt(house) - 6 : parseInt(house) + 6] = fixed + 180;
 
             } else {
                 throw "not ready";
