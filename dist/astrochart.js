@@ -325,8 +325,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 var fixed = _round(_rotate(zodiac));
                 var rotation = _rotation.houses[house] - fixed;
                 
-                console.debug("Rotating house", house, 'to', zodiac, " (", fixed, "). Was:", _rotation.houses[house]);
-                console.debug("Rotation:", rotation);
+                console.debug("Rotating house", house, 'to', zodiac, '(', rotation, 'rotation ).');
                 
                 var matrix = new Snap.Matrix();
                 matrix.rotate(rotation, 300, 300);
