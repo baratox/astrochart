@@ -287,11 +287,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         var element = _svg.select('#' + _houses[house].text);
         if (element) {
             var next = (parseInt(house) < 12 ? parseInt(house) + 1 : 1).toString();
-            console.log("House", house, ": ", _rotation.houses[house], "/", next, ": ", _rotation.houses[next]);
-            
             var center = 180 + (_round(_rotation.houses[next]) + _round(_rotation.houses[house])) / 2;
             if (next == '1') center += 180;
-            
+
             var rotation = _rotation["house-texts"][house] - center;
             console.log("Centering text for house", house, "to", center, "by", rotation, "was", _rotation["house-texts"][house]);
             _rotation["house-texts"][house] = center;
