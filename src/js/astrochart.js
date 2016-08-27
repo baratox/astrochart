@@ -88,7 +88,9 @@ window.Astrochart = (function(w, h, overridenSettings) {
     };
 
     function house(houses, degrees) {
-        return iterateIfCollection(houses, degrees, _house);
+        var result = iterateIfCollection(houses, degrees, _house);
+        theme.invalidate();
+        return result;
     };
 
     function _house(house, degrees) {

@@ -1,10 +1,10 @@
 Astrochart.AstrochartTheme = function(_svg, _settings) {
     var _rotation = {
         'zodiac': 105,
-        'houses': { '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, '7' : 180,
-                    '8' : 210, '9' : 240, '10' : 270, '11' : 300, '12' : 330 },
-        'house-texts': { '1' : 45, '2' : 75, '3' : 105, '4' : 135, '5' : 165, '6' : 195,
-                         '7' : 225, '8' : 255, '9' : 285, '10' : 315, '11' : 345, '12' : 375 },
+        'houses': { '1' : 0, '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, 
+                    '7' : 180, '8' : 210, '9' : 240, '10' : 270, '11' : 300, '12' : 330 },
+        'house-texts': { '1' : 90, '2' : 90, '3' : 90, '4' : 90, '5' : 90, '6' : 90,
+                         '7' : 90, '8' : 90, '9' : 90, '10' : 90, '11' : 90, '12' : 90 },
         'planets': {
             'sun': 0,
             'moon': 0,
@@ -19,19 +19,20 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         }
     };
 
+    // TODO Replace numerical key with text to avoid confusion with indexes
     var _houses = { 
-        '1': { text: 'house-12-text' }, // Ascendant is fixed
-        '2': { text: 'house-1-text', id: 'house-2', },
-        '3': { text: 'house-2-text', id: 'house-3' },
-        '4': { text: 'house-3-text', id: 'mc' },
-        '5': { text: 'house-4-text', id: 'house-5' },
-        '6': { text: 'house-5-text', id: 'house-6' },
-        '7': { text: 'house-6-text' }, // Descendant is fixed
-        '8': { text: 'house-7-text', id: 'house-2' },
-        '9': { text: 'house-8-text', id: 'house-3' },
-        '10': { text: 'house-9-text', id: 'mc' },
-        '11': { text: 'house-10-text', id: 'house-5' },
-        '12': { text: 'house-11-text', id: 'house-6' }
+        '1': { text: 'house-1-text' }, // Ascendant is fixed
+        '2': { text: 'house-2-text', id: 'house-2', },
+        '3': { text: 'house-3-text', id: 'house-3' },
+        '4': { text: 'house-4-text', id: 'mc' },
+        '5': { text: 'house-5-text', id: 'house-5' },
+        '6': { text: 'house-6-text', id: 'house-6' },
+        '7': { text: 'house-7-text' }, // Descendant is fixed
+        '8': { text: 'house-8-text', id: 'house-2' },
+        '9': { text: 'house-9-text', id: 'house-3' },
+        '10': { text: 'house-10-text', id: 'mc' },
+        '11': { text: 'house-11-text', id: 'house-5' },
+        '12': { text: 'house-12-text', id: 'house-6' }
     };
 
     Snap.load(_settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
@@ -72,22 +73,34 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      *           start of Aries.
      */
     var _rotate = function(zodiac) {
-        return zodiac - _rotation.zodiac;
+        var fixed = zodiac - _rotation.zodiac;
+        return _round(fixed);
     };
 
     // Rounds to avoid complex numbers when calculating
     var _round = function(number) {
-        return number.toFixed(5);
+        if (typeof(number) !== "number") console.warn("Invalid number", number, typeof(number));
+        number = Number(number.toFixed(5));
+        if (number < 0) number += 360;
+        if (number >= 360) number -= 360;
+        return number;
     }
 
     var _centerHouseText = function(house) {
+        if (typeof(house) === "number") {
+            house = house.toString();
+        }
+
         var element = _svg.select('#' + _houses[house].text);
         if (element) {
-            var next = parseInt(house) < 12 ? parseInt(house) + 1 : 1;
-            var center = _rotation.houses[house] + (_rotation.houses[next] - _rotation.houses[house]) / 2;
-            console.log("Centering text for house", house, "to", center, next);
-
-            var rotation = center - _rotation["house-texts"][house];
+            var next = (parseInt(house) < 12 ? parseInt(house) + 1 : 1).toString();
+            console.log("House", house, ": ", _rotation.houses[house], "/", next, ": ", _rotation.houses[next]);
+            
+            var center = 180 + (_round(_rotation.houses[next]) + _round(_rotation.houses[house])) / 2;
+            if (next == '1') center += 180;
+            
+            var rotation = _rotation["house-texts"][house] - center;
+            console.log("Centering text for house", house, "to", center, "by", rotation, "was", _rotation["house-texts"][house]);
             _rotation["house-texts"][house] = center;
 
             var matrix = new Snap.Matrix();
@@ -97,6 +110,12 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
         } else {
             console.warn("No text for house", house);
+        }
+    };
+
+    var invalidate = function() {
+        for (var house in _houses) {
+            _centerHouseText(house);
         }
     };
 
@@ -133,7 +152,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             if (element) {
                 var fixed = _round(_rotate(zodiac));
                 var rotation = _rotation.houses[house] - fixed;
-                
+
                 console.debug("Rotating house", house, 'to', zodiac, '(', rotation, 'rotation ).');
                 
                 var matrix = new Snap.Matrix();
@@ -141,10 +160,11 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 matrix.add(element.transform().localMatrix);
                 element.transform(matrix);
 
-                _centerHouseText(house);
-
+                var next = (parseInt(house) > 6 ? parseInt(house) - 6 : parseInt(house) + 6).toString();
                 _rotation.houses[house] = fixed;
-                _rotation.houses[parseInt(house) > 6 ? parseInt(house) - 6 : parseInt(house) + 6] = fixed + 180;
+                _rotation.houses[next] = _round(fixed + 180);
+                console.log("Moved house", house, "to", _rotation.houses[house], 
+                            " / ", next, "to", _rotation.houses[next]);
 
             } else {
                 throw "not ready";
@@ -178,6 +198,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     return {
         "ascendant" : ascendant,
         "astro" : astro,
-        "house" : house
+        "house" : house,
+        "invalidate" : invalidate
     }
 };
