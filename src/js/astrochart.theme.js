@@ -1,4 +1,6 @@
 Astrochart.AstrochartTheme = function(_svg, _settings) {
+    const PLANET_SIZE = 108;
+
     var _rotation = {
         'zodiac': 105,
         'houses': { '1' : 0, '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, 
@@ -60,6 +62,16 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             }
 
             _svg.append(object);
+
+            // Scale the planet down an center it to its coordinates
+            var scale = 0.5;
+            var half = scale * PLANET_SIZE/2;
+
+            var matrix = new Snap.Matrix();
+            matrix.translate(-half, -half);
+            matrix.scale(scale);
+            object.transform(matrix);
+            object.transformOriginal();
 
             object.orbit(orbit, 0);
         };

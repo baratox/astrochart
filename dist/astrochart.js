@@ -44,18 +44,44 @@ Snap.plugin(function(Snap, Element, Paper) {
         var pathLength = orbit.getTotalLength();
         var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
 
-        var scale = 0.5;
-        var half = scale * PLANET_SIZE/2;
-
         var matrix = new Snap.Matrix();
         matrix.translate(point.x, point.y);
-        matrix.translate(-half, -half);
-        matrix.scale(scale);
-        
-        this.transform(matrix);
+        this.transformOriginal(matrix);
     };
 });
 
+Snap.plugin(function(Snap, Element, Paper) {
+    'use strict';
+
+    Element.prototype.transformOriginal = function(t, append) {
+        if (typeof t === "undefined") {
+            // Save current transformation as original.
+            this.data("original-transform", this.transform().localMatrix);
+
+        } else {
+            // Prepends t to the original transform by default
+            append = typeof append !== "undefined" ? append : false;
+            var original = this.data("original-transform").clone();
+            if (t instanceof Snap.Matrix) {
+                if (append) {
+                    this.transform(original.add(t));
+                } else {
+                    this.transform(t.add(original));
+                }
+
+            } else {
+                if (append) {
+                    this.transform(original);
+                    this.transform(t);
+                } else {
+                    this.transform(t);
+                    this.transform(original);
+                }
+            }
+        }
+    };
+
+});
 window.Astrochart = (function(w, h, overridenSettings) {
     "use strict";
 
@@ -192,6 +218,8 @@ window.Astrochart = (function(w, h, overridenSettings) {
 });
 
 Astrochart.AstrochartTheme = function(_svg, _settings) {
+    const PLANET_SIZE = 108;
+
     var _rotation = {
         'zodiac': 105,
         'houses': { '1' : 0, '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, 
@@ -253,6 +281,16 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             }
 
             _svg.append(object);
+
+            // Scale the planet down an center it to its coordinates
+            var scale = 0.5;
+            var half = scale * PLANET_SIZE/2;
+
+            var matrix = new Snap.Matrix();
+            matrix.translate(-half, -half);
+            matrix.scale(scale);
+            object.transform(matrix);
+            object.transformOriginal();
 
             object.orbit(orbit, 0);
         };

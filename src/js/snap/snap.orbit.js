@@ -44,14 +44,8 @@ Snap.plugin(function(Snap, Element, Paper) {
         var pathLength = orbit.getTotalLength();
         var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
 
-        var scale = 0.5;
-        var half = scale * PLANET_SIZE/2;
-
         var matrix = new Snap.Matrix();
         matrix.translate(point.x, point.y);
-        matrix.translate(-half, -half);
-        matrix.scale(scale);
-        
-        this.transform(matrix);
+        this.transformOriginal(matrix);
     };
 });
