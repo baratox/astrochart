@@ -3,46 +3,37 @@ Snap.plugin(function(Snap, Element, Paper) {
 
     const PLANET_SIZE = 108;
 
-    Paper.prototype.createCircularOrbit = function(cx, cy, r) {
-        if (!String.prototype.format) {
-            String.prototype.format = function() {
-                var str = this.toString();
-                if (!arguments.length)
-                    return str;
-                var args = typeof arguments[0],
-                    args = (("string" == args || "number" == args) ? arguments : arguments[0]);
-
-                for (var arg in args)
-                    str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
-                return str;
-            }
-        }
-
-        var path = this.path(("M {cx}, {cy} " + 
-                      "m -{r}, 0 " +
-                      "a {r},{r} 0 1,0 {d},0 " + 
-                      "a {r},{r} 0 1,0 -{d},0").format({cx:cx, cy:cy, r:r, d:r*2}));
-        path.attr({
-            'id': 'orbit',
-            'fill': 'none'
-        });
-
-        return path;
-    };
-
     /**
-     * Rotates a given Snap.Element the given amount of degrees around the center. 
-     * The amount of degrees can be a negative or positive number, depending on 
-     * which way you want to rotate the node. The rotation will be done around 
-     * the central coordinates of the element.
+     * Moves the Snap.Element in a clock-wise circular orbit around 
+     * the given center. At 0º the element is at farthest east point.
      *
      * @method orbit
      * @public
-     * @param {Integer} degrees
+     * @param {Integer} angle: Angle in degrees.
+     * @param {Integer} radius: Radius in pixels.
+     * @param {Integer} cx: x coordinate of the orbit center.
+     * @param {Integer} cy: y coordinate of the orbit center.
      */
-    Element.prototype.orbit = function(orbit, degrees) {
-        var pathLength = orbit.getTotalLength();
-        var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
+    Element.prototype.get_orbit = function(angle, radius, cx, cy) {
+        var x = cx + radius * Math.cos(Snap.rad(angle)),
+            y = cy + radius * Math.sin(Snap.rad(angle));
+        return { 'x': x, 'y': y }
+    };
+
+
+    /**
+     * Moves the Snap.Element in a clock-wise circular orbit around 
+     * the given center. At 0º the element is at farthest east point.
+     *
+     * @method orbit
+     * @public
+     * @param {Integer} angle: Angle in degrees.
+     * @param {Integer} radius: Radius in pixels.
+     * @param {Integer} cx: x coordinate of the orbit center.
+     * @param {Integer} cy: y coordinate of the orbit center.
+     */
+    Element.prototype.orbit = function(angle, radius, cx, cy) {
+        var point = this.get_orbit(angle, radius, cx, cy);
 
         var matrix = new Snap.Matrix();
         matrix.translate(point.x, point.y);

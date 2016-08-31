@@ -1,5 +1,12 @@
 Astrochart.AstrochartTheme = function(_svg, _settings) {
+
     const PLANET_SIZE = 108;
+    const PLANET_ORBIT = 198;
+
+    var _center = {
+        'x' : 300,
+        'y' : 300
+    };
 
     var _rotation = {
         'zodiac': 105,
@@ -41,10 +48,6 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         // Add everything from the sprites file.
         _svg.append(svg);
 
-        // Creates the orbit for space objects
-        orbit = _svg.createCircularOrbit(300, 300, 198);
-        _svg.append(orbit);
-
         console.debug("Finished loading zodiac.svg.");
     });
 
@@ -73,7 +76,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             object.transform(matrix);
             object.transformOriginal();
 
-            object.orbit(orbit, 0);
+            object.orbit(0, PLANET_ORBIT, _center.x, _center.y);
         };
     });
 
@@ -186,7 +189,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         var element = _svg.select("g#" + name);
         if (element) {
             var angleFrom = _rotation.planets[name],
-                angleTo = _rotate(zodiac);
+                // Rotate counter-clock, with 0º at the farthest west, the ascendant.
+                angleTo = - (180 + _rotate(zodiac));
             
             if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
             if (angleTo < 0) { angleTo = 360 + angleTo; }
@@ -195,7 +199,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(orbit, value);
+                    element.orbit(value, PLANET_ORBIT, _center.x, _center.y);
                 }, 400);
 
             _rotation.planets[name] = angleTo;

@@ -3,46 +3,37 @@ Snap.plugin(function(Snap, Element, Paper) {
 
     const PLANET_SIZE = 108;
 
-    Paper.prototype.createCircularOrbit = function(cx, cy, r) {
-        if (!String.prototype.format) {
-            String.prototype.format = function() {
-                var str = this.toString();
-                if (!arguments.length)
-                    return str;
-                var args = typeof arguments[0],
-                    args = (("string" == args || "number" == args) ? arguments : arguments[0]);
-
-                for (var arg in args)
-                    str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
-                return str;
-            }
-        }
-
-        var path = this.path(("M {cx}, {cy} " + 
-                      "m -{r}, 0 " +
-                      "a {r},{r} 0 1,0 {d},0 " + 
-                      "a {r},{r} 0 1,0 -{d},0").format({cx:cx, cy:cy, r:r, d:r*2}));
-        path.attr({
-            'id': 'orbit',
-            'fill': 'none'
-        });
-
-        return path;
-    };
-
     /**
-     * Rotates a given Snap.Element the given amount of degrees around the center. 
-     * The amount of degrees can be a negative or positive number, depending on 
-     * which way you want to rotate the node. The rotation will be done around 
-     * the central coordinates of the element.
+     * Moves the Snap.Element in a clock-wise circular orbit around 
+     * the given center. At 0º the element is at farthest east point.
      *
      * @method orbit
      * @public
-     * @param {Integer} degrees
+     * @param {Integer} angle: Angle in degrees.
+     * @param {Integer} radius: Radius in pixels.
+     * @param {Integer} cx: x coordinate of the orbit center.
+     * @param {Integer} cy: y coordinate of the orbit center.
      */
-    Element.prototype.orbit = function(orbit, degrees) {
-        var pathLength = orbit.getTotalLength();
-        var point = orbit.getPointAtLength(degrees * pathLength / 360 );  
+    Element.prototype.get_orbit = function(angle, radius, cx, cy) {
+        var x = cx + radius * Math.cos(Snap.rad(angle)),
+            y = cy + radius * Math.sin(Snap.rad(angle));
+        return { 'x': x, 'y': y }
+    };
+
+
+    /**
+     * Moves the Snap.Element in a clock-wise circular orbit around 
+     * the given center. At 0º the element is at farthest east point.
+     *
+     * @method orbit
+     * @public
+     * @param {Integer} angle: Angle in degrees.
+     * @param {Integer} radius: Radius in pixels.
+     * @param {Integer} cx: x coordinate of the orbit center.
+     * @param {Integer} cy: y coordinate of the orbit center.
+     */
+    Element.prototype.orbit = function(angle, radius, cx, cy) {
+        var point = this.get_orbit(angle, radius, cx, cy);
 
         var matrix = new Snap.Matrix();
         matrix.translate(point.x, point.y);
@@ -61,22 +52,27 @@ Snap.plugin(function(Snap, Element, Paper) {
         } else {
             // Prepends t to the original transform by default
             append = typeof append !== "undefined" ? append : false;
-            var original = this.data("original-transform").clone();
-            if (t instanceof Snap.Matrix) {
-                if (append) {
-                    this.transform(original.add(t));
-                } else {
-                    this.transform(t.add(original));
-                }
+            var original = this.data("original-transform") != null ? this.data("original-transform").clone() : null;
+            if (original) {
+                if (t instanceof Snap.Matrix) {
+                    if (append) {
+                        this.transform(original.add(t));
+                    } else {
+                        this.transform(t.add(original));
+                    }
 
-            } else {
-                if (append) {
-                    this.transform(original);
-                    this.transform(t);
                 } else {
-                    this.transform(t);
-                    this.transform(original);
+                    if (append) {
+                        this.transform(original);
+                        this.transform(t);
+                    } else {
+                        this.transform(t);
+                        this.transform(original);
+                    }
                 }
+                
+            } else {
+                this.transform(t);
             }
         }
     };
@@ -218,7 +214,14 @@ window.Astrochart = (function(w, h, overridenSettings) {
 });
 
 Astrochart.AstrochartTheme = function(_svg, _settings) {
+
     const PLANET_SIZE = 108;
+    const PLANET_ORBIT = 198;
+
+    var _center = {
+        'x' : 300,
+        'y' : 300
+    };
 
     var _rotation = {
         'zodiac': 105,
@@ -260,10 +263,6 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         // Add everything from the sprites file.
         _svg.append(svg);
 
-        // Creates the orbit for space objects
-        orbit = _svg.createCircularOrbit(300, 300, 198);
-        _svg.append(orbit);
-
         console.debug("Finished loading zodiac.svg.");
     });
 
@@ -292,7 +291,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             object.transform(matrix);
             object.transformOriginal();
 
-            object.orbit(orbit, 0);
+            object.orbit(0, PLANET_ORBIT, _center.x, _center.y);
         };
     });
 
@@ -405,7 +404,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         var element = _svg.select("g#" + name);
         if (element) {
             var angleFrom = _rotation.planets[name],
-                angleTo = _rotate(zodiac);
+                // Rotate counter-clock, with 0º at the farthest west, the ascendant.
+                angleTo = - (180 + _rotate(zodiac));
             
             if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
             if (angleTo < 0) { angleTo = 360 + angleTo; }
@@ -414,7 +414,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(orbit, value);
+                    element.orbit(value, PLANET_ORBIT, _center.x, _center.y);
                 }, 400);
 
             _rotation.planets[name] = angleTo;
