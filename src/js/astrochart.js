@@ -126,6 +126,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
     return {
         snap: snap,
+        theme: theme,
         ascendant: ascendant,
         move: move,
         house: house

@@ -2,6 +2,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
     const PLANET_SIZE = 108;
     const PLANET_ORBIT = 198;
+    const ASPECT_ORBIT = 164;
+    const ASPECT_MAX_STROKE = 4;
+
 
     var _center = {
         'x' : 300,
@@ -208,11 +211,44 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         }
     };
 
+    // Shows the relationship between two objects in the chart 
+    var aspect = function(a, b, intensity) {
+        if (!(a in _rotation.planets)) {
+            throw a + " is unknown"
+        }
+        if (!(b in _rotation.planets)) {
+            throw b + " is unknown"
+        }
+
+        var point_a = _svg.get_orbit(_rotation.planets[a], ASPECT_ORBIT, _center.x, _center.y),
+            point_b = _svg.get_orbit(_rotation.planets[b], ASPECT_ORBIT, _center.x, _center.y);
+
+        // Always use the "smaller" object name first to build the id.
+        var id = a < b ? 'aspect-' + a + '-' + b : 'aspect-' + b + '-' + a;
+        var line = _svg.select('#' + id);
+        if (!line) {
+            line = _svg.line(point_a.x, point_a.y, point_b.x, point_b.y);
+            line.attr('id', id);
+            line.attr({'stroke': "#777", 'strokeWidth': intensity * ASPECT_MAX_STROKE});
+            _svg.add(line);
+
+        } else {
+            line.attr({
+                'x1': point_a.x, 'y1': point_a.y, 
+                'x2': point_b.x, 'y2': point_b.y,
+                'strokeWidth': intensity * ASPECT_MAX_STROKE 
+            });
+        }
+
+        return line;
+    };
+
     // Builds the public API for an AstrochartTheme.
     return {
         "ascendant" : ascendant,
         "astro" : astro,
         "house" : house,
+        "aspect" : aspect,
         "invalidate" : invalidate
     }
 };
