@@ -17,6 +17,21 @@
             stroke-dasharray: 1,1;
             */
         }
+
+        svg line.sextile,
+        svg line.trine {
+            stroke: #7d7;
+        }
+
+        svg line.opposite {
+            stroke: #d77;
+        }
+
+        svg line.square {
+            stroke: #77d;
+        }
+
+
     </style>
 </head>
 <body>
@@ -47,20 +62,7 @@
                     'saturn': 256.38630702429515,
                     'uranus': 264.13288658224405,
                     'neptune': 276.033244809184,
-                    'pluto': 219.6588681915625,
-                    'mean_node': 16.005555353595778,
-                    'true_node': 16.1944757653084,
-                    'mean_apog': 95.33889905488698,
-                    'oscu_apog': 84.9507032192178,
-                    'earth': 0.0,
-                    'chiron': 76.90251915486385,
-                    'pholus': 41.623513563315576,
-                    'ceres': 248.77838003337908,
-                    'pallas': 226.34175299074815,
-                    'juno': 285.1513542574809,
-                    'vesta': 11.311389933835654,
-                    'intp_apog': 91.95105203268173,
-                    'intp_perg': 282.4679061155785,
+                    'pluto': 219.6588681915625
                 });
             
                 chart.house({
@@ -77,6 +79,18 @@
                   '11': 174.95461901764045,
                   '12': 211.19714663472652,
                 });
+
+                chart.aspect([
+                    {"a":"sun",     "b":"pluto",    "value":0.02277496792544582,    "classes":"sextile"},
+                    {"a":"moon",    "b":"mars",     "value":0.5271157724960596,     "classes":"sextile"},
+                    {"a":"mercury", "b":"pluto",    "value":0.17549833381096108,    "classes":"sextile"},
+                    {"a":"venus",   "b":"moon",     "value":0.37739178013014796,    "classes":"opposite"},
+                    {"a":"jupiter", "b":"sun",      "value":0.9623108008389977,     "classes":"sextile"},
+                    {"a":"jupiter", "b":"mercury",  "value":0.8849658332754871,     "classes":"sextile"},
+                    {"a":"jupiter", "b":"saturn",   "value":0.7332080503597126,     "classes":"square"},
+                    {"a":"jupiter", "b":"uranus",   "value":0.49213399384539686,    "classes":"square"},
+                    {"a":"jupiter", "b":"pluto",    "value":0.060464167086448126,   "classes":"trine"},
+                    {"a":"neptune", "b":"pluto",    "value":0.6374376617621493,     "classes":"sextile"}]);
             }, 1000);
 
         })();

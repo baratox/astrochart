@@ -212,7 +212,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     };
 
     // Shows the relationship between two objects in the chart 
-    var aspect = function(a, b, intensity) {
+    var aspect = function(a, b, value, classes) {
         if (!(a in _rotation.planets)) {
             throw a + " is unknown"
         }
@@ -228,15 +228,16 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         var line = _svg.select('#' + id);
         if (!line) {
             line = _svg.line(point_a.x, point_a.y, point_b.x, point_b.y);
-            line.attr('id', id);
-            line.attr({'stroke': "#777", 'strokeWidth': intensity * ASPECT_MAX_STROKE});
+            line.attr({'id': id, 'class': classes});
+            line.attr({'stroke': "#777", 'strokeWidth': value * ASPECT_MAX_STROKE});
             _svg.add(line);
 
         } else {
             line.attr({
+                'class': classes,
                 'x1': point_a.x, 'y1': point_a.y, 
                 'x2': point_b.x, 'y2': point_b.y,
-                'strokeWidth': intensity * ASPECT_MAX_STROKE 
+                'strokeWidth': value * ASPECT_MAX_STROKE 
             });
         }
 

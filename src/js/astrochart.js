@@ -108,6 +108,14 @@ window.Astrochart = (function(w, h, overridenSettings) {
         }
     };
 
+    function aspect(aspects) {
+        for (var i in aspects) {
+            var aspect = aspects[i];
+            theme.aspect(aspect.a, aspect.b, aspect.value, aspect.classes);
+        }
+    }
+
+
     function iterateIfCollection(argument, parameter, callback) {
         if (typeof argument === "object") {
 
@@ -121,6 +129,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
         }
     };
 
+
     // Initialize this instance and return public API.
     _Astrochart(w !== undefined ? w : 600, h, overridenSettings);
 
@@ -129,7 +138,8 @@ window.Astrochart = (function(w, h, overridenSettings) {
         theme: theme,
         ascendant: ascendant,
         move: move,
-        house: house
+        house: house,
+        aspect: aspect
     };
 
 });
