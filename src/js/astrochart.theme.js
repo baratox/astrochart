@@ -1,15 +1,12 @@
 Astrochart.AstrochartTheme = function(_svg, _settings) {
 
-    const PLANET_SIZE = 108;
-    const PLANET_ORBIT = 198;
-    const ASPECT_ORBIT = 164;
-    const ASPECT_MAX_STROKE = 4;
-
-
-    var _center = {
-        'x' : 300,
-        'y' : 300
-    };
+    var settings = jQuery.extend({
+        'sprites-planet-size': 108,
+        'center': {'x': 300, 'y': 300},
+        'astro-orbit': 198,
+        'aspect-orbit': 164,
+        'aspect-maximun-stroke': 4
+    }, _settings);
 
     var _rotation = {
         'zodiac': 105,
@@ -47,14 +44,14 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         '12': { text: 'house-12-text', id: 'house-6' }
     };
 
-    Snap.load(_settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
+    Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
         // Add everything from the sprites file.
         _svg.append(svg);
 
         console.debug("Finished loading zodiac.svg.");
     });
 
-    Snap.load(_settings['sprites-base-url'] + "/things.svg", function(svg) {
+    Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
         for (var planet in _rotation.planets) {
             loadSpaceObject(svg, planet, Math.random() * 10000 + 3000);
         }
@@ -71,7 +68,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
             // Scale the planet down an center it to its coordinates
             var scale = 0.5;
-            var half = scale * PLANET_SIZE/2;
+            var half = scale * settings["sprites-planet-size"]/2;
 
             var matrix = new Snap.Matrix();
             matrix.translate(-half, -half);
@@ -79,7 +76,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             object.transform(matrix);
             object.transformOriginal();
 
-            object.orbit(0, PLANET_ORBIT, _center.x, _center.y);
+            object.orbit(0, settings["astro-orbit"], settings["center"].x, settings["center"].y);
         };
     });
 
@@ -202,7 +199,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(value, PLANET_ORBIT, _center.x, _center.y);
+                    element.orbit(value, settings["astro-orbit"], settings["center"].x, settings["center"].y);
                 }, 400);
 
             _rotation.planets[name] = angleTo;
@@ -220,8 +217,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             throw b + " is unknown"
         }
 
-        var point_a = _svg.get_orbit(_rotation.planets[a], ASPECT_ORBIT, _center.x, _center.y),
-            point_b = _svg.get_orbit(_rotation.planets[b], ASPECT_ORBIT, _center.x, _center.y);
+        var point_a = _svg.get_orbit(_rotation.planets[a], settings["aspect-orbit"], settings["center"].x, settings["center"].y),
+            point_b = _svg.get_orbit(_rotation.planets[b], settings["aspect-orbit"], settings["center"].x, settings["center"].y);
 
         // Always use the "smaller" object name first to build the id.
         var id = a < b ? 'aspect-' + a + '-' + b : 'aspect-' + b + '-' + a;
@@ -229,7 +226,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         if (!line) {
             line = _svg.line(point_a.x, point_a.y, point_b.x, point_b.y);
             line.attr({'id': id, 'class': classes});
-            line.attr({'stroke': "#777", 'strokeWidth': value * ASPECT_MAX_STROKE});
+            line.attr({'stroke': "#777", 'strokeWidth': value * settings["aspect-maximun-stroke"]});
             _svg.add(line);
 
         } else {
@@ -237,7 +234,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 'class': classes,
                 'x1': point_a.x, 'y1': point_a.y, 
                 'x2': point_b.x, 'y2': point_b.y,
-                'strokeWidth': value * ASPECT_MAX_STROKE 
+                'strokeWidth': value * settings["aspect-maximun-stroke"] 
             });
         }
 
