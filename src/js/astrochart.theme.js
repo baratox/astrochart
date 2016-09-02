@@ -5,27 +5,18 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'center': {'x': 300, 'y': 300},
         'astro-orbit': 198,
         'aspect-orbit': 164,
-        'aspect-maximun-stroke': 4
+        'aspect-maximun-stroke': 4,
+        'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
+                           'saturn', 'uranus', 'neptune', 'pluto']
     }, _settings);
 
+    var zodiac_rotation;
+
     var _rotation = {
-        'zodiac': 105,
         'houses': { '1' : 0, '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, 
                     '7' : 180, '8' : 210, '9' : 240, '10' : 270, '11' : 300, '12' : 330 },
         'house-texts': { '1' : 90, '2' : 90, '3' : 90, '4' : 90, '5' : 90, '6' : 90,
-                         '7' : 90, '8' : 90, '9' : 90, '10' : 90, '11' : 90, '12' : 90 },
-        'planets': {
-            'sun': 0,
-            'moon': 0,
-            'mercury': 0, 
-            'venus': 0,
-            'mars': 0,
-            'jupiter': 0,
-            'saturn': 0,
-            'uranus': 0,
-            'neptune': 0,
-            'pluto': 0 
-        }
+                         '7' : 90, '8' : 90, '9' : 90, '10' : 90, '11' : 90, '12' : 90 }
     };
 
     // TODO Replace numerical key with text to avoid confusion with indexes
@@ -52,17 +43,19 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     });
 
     Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
-        for (var planet in _rotation.planets) {
-            loadSpaceObject(svg, planet, Math.random() * 10000 + 3000);
+        for (var i in settings["visible-astros"]) {
+            loadSpaceObject(svg, settings["visible-astros"][i], Math.random() * 10000 + 3000);
         }
 
         function loadSpaceObject(svg, name, animationDelay) {
+            console.log("Loading", name)
             var object = svg.select("g#" + name);
             if (!object) {
                 // Create one based on the default planet sprite
                 object = svg.select("g#planet").clone();
                 object.attr({'id': name});
             }
+            object.data("position", 0);
 
             _svg.append(object);
 
@@ -88,7 +81,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      *           start of Aries.
      */
     var _rotate = function(zodiac) {
-        var fixed = zodiac - _rotation.zodiac;
+        var fixed = zodiac - zodiac_rotation;
         return _round(fixed);
     };
 
@@ -141,7 +134,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         var wheel = _svg.select("g#zodiac");
         if (wheel) {
             // Sprite is rotated 105º clockwise
-            var angleFrom = _rotation.zodiac - 105;
+            var angleFrom = zodiac_rotation - 105;
             var angleTo = zodiac - 105;
             if (angleFrom != angleTo) {
                 console.debug("Rotating zodiac to", zodiac);
@@ -151,7 +144,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                     wheel.transform("r" + value + ",300,300");
                 }, 800);
                 
-                _rotation.zodiac = zodiac;
+                zodiac_rotation = zodiac;
             }
 
         } else {
@@ -188,7 +181,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     var astro = function(name, zodiac) {
         var element = _svg.select("g#" + name);
         if (element) {
-            var angleFrom = _rotation.planets[name],
+            var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
                 angleTo = - (180 + _rotate(zodiac));
             
@@ -202,7 +195,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                     element.orbit(value, settings["astro-orbit"], settings["center"].x, settings["center"].y);
                 }, 400);
 
-            _rotation.planets[name] = angleTo;
+            element.data('position', angleTo);
         } else {
             throw "not ready";
         }
@@ -210,15 +203,20 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
     // Shows the relationship between two objects in the chart 
     var aspect = function(a, b, value, classes) {
-        if (!(a in _rotation.planets)) {
+        if (settings["visible-astros"].indexOf(a) < 0) {
             throw a + " is unknown"
         }
-        if (!(b in _rotation.planets)) {
+        if (settings["visible-astros"].indexOf(b) < 0) {
             throw b + " is unknown"
         }
 
-        var point_a = _svg.get_orbit(_rotation.planets[a], settings["aspect-orbit"], settings["center"].x, settings["center"].y),
-            point_b = _svg.get_orbit(_rotation.planets[b], settings["aspect-orbit"], settings["center"].x, settings["center"].y);
+        var astro_a = _svg.select("#" + a),
+            astro_b = _svg.select("#" + b);
+
+        var point_a = _svg.get_orbit(astro_a.data("position"), settings["aspect-orbit"], 
+                                     settings["center"].x, settings["center"].y),
+            point_b = _svg.get_orbit(astro_b.data("position"), settings["aspect-orbit"], 
+                                     settings["center"].x, settings["center"].y);
 
         // Always use the "smaller" object name first to build the id.
         var id = a < b ? 'aspect-' + a + '-' + b : 'aspect-' + b + '-' + a;
