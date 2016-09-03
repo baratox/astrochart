@@ -236,7 +236,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                            'saturn', 'uranus', 'neptune', 'pluto']
     }, _settings);
 
-    var zodiac_rotation;
+    var zodiac_rotation = 105;
 
     var _rotation = {
         'houses': { '1' : 0, '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, 
@@ -286,7 +286,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             _svg.append(object);
 
             // Scale the planet down an center it to its coordinates
-            var scale = 0.5;
+            var scale = 0.37;
             var half = scale * settings["sprites-planet-size"]/2;
 
             var matrix = new Snap.Matrix();
