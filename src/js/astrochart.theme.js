@@ -142,13 +142,15 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     var ascendant = function(zodiac) {
         var wheel = _svg.select("g#zodiac");
         if (wheel) {
-            // Sprite is rotated 105º clockwise
+            if (zodiac === undefined) {
+                return wheel;
+            }
+
+            // Sprite is initially rotated 105º clockwise
             var angleFrom = zodiac_rotation - 105;
             var angleTo = zodiac - 105;
             if (angleFrom != angleTo) {
                 console.debug("Rotating zodiac to", zodiac);
-
-                // TODO Rotate everything else too
                 Snap.animate(angleFrom, angleTo, function(value) {
                     wheel.transform("r" + value + ",300,300");
                 }, 800);
@@ -156,8 +158,10 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 zodiac_rotation = zodiac;
             }
 
+            return wheel;
+
         } else {
-            throw "not ready";
+            throw "Zodiac does not exist";
         }
     };
 
@@ -183,13 +187,17 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             return element;
 
         } else {
-            throw "not ready";
+            throw "House " + house + " does not exist";
         }
     };
 
     var astro = function(name, zodiac) {
         var element = _svg.select("g#" + name);
         if (element) {
+            if (zodiac === undefined) {
+                return element;
+            }
+
             var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
                 angleTo = - (180 + _rotate(zodiac));
@@ -205,8 +213,11 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 }, 400);
 
             element.data('position', angleTo);
+
+            return element;
+
         } else {
-            throw "not ready";
+            throw "Astro " + name + " does not exist";
         }
     };
 
