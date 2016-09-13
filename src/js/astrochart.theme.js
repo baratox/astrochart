@@ -90,7 +90,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      */
     var _abs = function(zodiac) {
         var absolute = zodiac - zodiac_rotation;
-        return _round(absolute);
+        return absolute;
     };
 
     /**
@@ -99,10 +99,15 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      */
     var _round = function(number) {
         if (typeof(number) !== "number") console.warn("Invalid number", number, typeof(number));
-        number = Number(number.toFixed(5));
-        if (number < 0) number += 360;
-        if (number >= 360) number -= 360;
-        return number;
+        var rounded = number;
+        if (number < 0) {
+            rounded += 360;
+        }
+        if (number >= 360) {
+            rounded -= 360;
+        }
+
+        return Number(rounded.toFixed(3));
     }
 
     var _centerHouseText = function(house_number) {
@@ -111,11 +116,10 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             var next = house_number < 12 ? house_number + 1 : 1;
 
             // House 1 starts at 180 degrees
-            var center = 180 + (_round(house(house_number).data("rotation")) + 
-                                _round(house(next).data("rotation"))) / 2;
+            var center = _round(180 + (house(house_number).data("rotation") + house(next).data("rotation")) / 2);
             if (house_number == 12) center += 180;
 
-            var rotation = text.data("rotation") - center;
+            var rotation = _round(text.data("rotation") - center);
             console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("rotation"));
             text.data("rotation", center);
 
@@ -149,6 +153,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 return wheel;
             }
 
+            zodiac = _round(zodiac);
+
             // Sprite is initially rotated 105º clockwise
             var angleFrom = zodiac_rotation - 105;
             var angleTo = zodiac - 105;
@@ -176,9 +182,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             } 
 
             var absolute = _round(_abs(zodiac));
-            var rotation = element.data("rotation") - absolute;
+            var rotation = _round(element.data("rotation") - absolute);
             
-            console.debug("Rotating house", house, 'to', zodiac, '(', rotation, 'rotation ).');
+            console.debug("Rotating house", house, 'to', absolute, '(', rotation, 'rotation ).');
             
             var matrix = new Snap.Matrix();
             matrix.rotate(rotation, 300, 300);
@@ -203,11 +209,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
             var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
-                angleTo = - (180 + _abs(zodiac));
-            
-            if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
-            if (angleTo < 0) { angleTo = 360 + angleTo; }
-            
+                angleTo = - _round(180 + _abs(zodiac));
+                        
             console.debug("Moving", name, "from", angleFrom, "to", angleTo);
             
             // Run animation if already loaded
