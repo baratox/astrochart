@@ -315,12 +315,15 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      * - zodiac: Zodiac-originated angle, with 0º at the 
      *           start of Aries.
      */
-    var _rotate = function(zodiac) {
-        var fixed = zodiac - zodiac_rotation;
-        return _round(fixed);
+    var _abs = function(zodiac) {
+        var absolute = zodiac - zodiac_rotation;
+        return _round(absolute);
     };
 
-    // Rounds to avoid complex numbers when calculating
+    /**
+     * Rounds angles to 5 decimal places to avoid complex values
+     * when calculating.
+     */
     var _round = function(number) {
         if (typeof(number) !== "number") console.warn("Invalid number", number, typeof(number));
         number = Number(number.toFixed(5));
@@ -399,8 +402,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 return element;
             } 
 
-            var fixed = _round(_rotate(zodiac));
-            var rotation = element.data("rotation") - fixed;
+            var absolute = _round(_abs(zodiac));
+            var rotation = element.data("rotation") - absolute;
             
             console.debug("Rotating house", house, 'to', zodiac, '(', rotation, 'rotation ).');
             
@@ -409,7 +412,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             matrix.add(element.transform().localMatrix);
             element.transform(matrix);
 
-            element.data("rotation", fixed);
+            element.data("rotation", absolute);
 
             return element;
 
@@ -427,7 +430,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
             var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
-                angleTo = - (180 + _rotate(zodiac));
+                angleTo = - (180 + _abs(zodiac));
             
             if (angleFrom < 0) { angleFrom = 360 + angleFrom; }
             if (angleTo < 0) { angleTo = 360 + angleTo; }
