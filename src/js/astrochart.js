@@ -13,18 +13,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
     var now = {
         'ascendant': 0,
         'houses': { 
-            '1' : 0,
-            '2' : 30,
-            '3' : 60,
-            '4' : 90,
-            '5' : 120,
-            '6' : 150,
-            '7' : 180,
-            '8' : 210,
-            '9' : 240,
-            '10' : 270,
-            '11' : 300,
-            '12' : 330
+            1 : 0,
+            2 : 30,
+            3 : 60,
+            4 : 90,
+            5 : 120,
+            6 : 150,
+            7 : 180,
+            8 : 210,
+            9 : 240,
+            10 : 270,
+            11 : 300,
+            12 : 330
         },
         'planets': {
             'sun': 0,
@@ -94,6 +94,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
     };
 
     function _house(house, degrees) {
+        house = typeof house !== "number" ? parseInt(house) : house;
         if (now.houses[house] === undefined) {
             return false;
         }

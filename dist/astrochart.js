@@ -93,18 +93,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
     var now = {
         'ascendant': 0,
         'houses': { 
-            '1' : 0,
-            '2' : 30,
-            '3' : 60,
-            '4' : 90,
-            '5' : 120,
-            '6' : 150,
-            '7' : 180,
-            '8' : 210,
-            '9' : 240,
-            '10' : 270,
-            '11' : 300,
-            '12' : 330
+            1 : 0,
+            2 : 30,
+            3 : 60,
+            4 : 90,
+            5 : 120,
+            6 : 150,
+            7 : 180,
+            8 : 210,
+            9 : 240,
+            10 : 270,
+            11 : 300,
+            12 : 330
         },
         'planets': {
             'sun': 0,
@@ -174,6 +174,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
     };
 
     function _house(house, degrees) {
+        house = typeof house !== "number" ? parseInt(house) : house;
         if (now.houses[house] === undefined) {
             return false;
         }
@@ -233,37 +234,45 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'aspect-orbit': 164,
         'aspect-maximun-stroke': 4,
         'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
-                           'saturn', 'uranus', 'neptune', 'pluto']
+                           'saturn', 'uranus', 'neptune', 'pluto'],
+        'houses': {
+            'house-1': {'rotation': 0, 'text-rotation': 90 },
+            'house-2': {'rotation': 30, 'text-rotation': 90 },
+            'house-3': {'rotation': 60, 'text-rotation': 90 },
+            'house-4': {'rotation': 90, 'text-rotation': 90 },
+            'house-5': {'rotation': 120, 'text-rotation': 90 },
+            'house-6': {'rotation': 150, 'text-rotation': 90 },
+            'house-7': {'rotation': 180, 'text-rotation': 90 },
+            'house-8': {'rotation': 210, 'text-rotation': 90 },
+            'house-9': {'rotation': 240, 'text-rotation': 90 },
+            'house-10': {'rotation': 270, 'text-rotation': 90 },
+            'house-11': {'rotation': 300, 'text-rotation': 90 },
+            'house-12': {'rotation': 330, 'text-rotation': 90 }
+        }
+
     }, _settings);
 
+
     var zodiac_rotation = 105;
-
-    var _rotation = {
-        'houses': { '1' : 0, '2' : 30, '3' : 60, '4' : 90, '5' : 120, '6' : 150, 
-                    '7' : 180, '8' : 210, '9' : 240, '10' : 270, '11' : 300, '12' : 330 },
-        'house-texts': { '1' : 90, '2' : 90, '3' : 90, '4' : 90, '5' : 90, '6' : 90,
-                         '7' : 90, '8' : 90, '9' : 90, '10' : 90, '11' : 90, '12' : 90 }
-    };
-
-    // TODO Replace numerical key with text to avoid confusion with indexes
-    var _houses = { 
-        '1': { text: 'house-1-text' }, // Ascendant is fixed
-        '2': { text: 'house-2-text', id: 'house-2', },
-        '3': { text: 'house-3-text', id: 'house-3' },
-        '4': { text: 'house-4-text', id: 'mc' },
-        '5': { text: 'house-5-text', id: 'house-5' },
-        '6': { text: 'house-6-text', id: 'house-6' },
-        '7': { text: 'house-7-text' }, // Descendant is fixed
-        '8': { text: 'house-8-text', id: 'house-2' },
-        '9': { text: 'house-9-text', id: 'house-3' },
-        '10': { text: 'house-10-text', id: 'mc' },
-        '11': { text: 'house-11-text', id: 'house-5' },
-        '12': { text: 'house-12-text', id: 'house-6' }
-    };
 
     Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
         // Add everything from the sprites file.
         _svg.append(svg);
+
+        // Initial rotation for houses in the sprites file.
+        for (var house = 1; house <= 12; house++) {
+            var id = "house-" + house;
+            var text = _svg.select("#" + id + "-text");
+            if (text) {
+                text.data("rotation", settings["houses"][id]["text-rotation"]);
+            }
+
+            var marker = _svg.select("#" + id);
+            if (marker) {
+                marker.data("rotation", settings["houses"][id]["rotation"]);
+                marker.data("text", text);
+            }
+        }
 
         console.debug("Finished loading zodiac.svg.");
     });
@@ -320,36 +329,37 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         return number;
     }
 
-    var _centerHouseText = function(house) {
-        if (typeof(house) === "number") {
-            house = house.toString();
-        }
+    var _centerHouseText = function(house_number) {
+        var text = house(house_number).data("text");
+        if (text) {
+            var next = house_number < 12 ? house_number + 1 : 1;
 
-        var element = _svg.select('#' + _houses[house].text);
-        if (element) {
-            var next = (parseInt(house) < 12 ? parseInt(house) + 1 : 1).toString();
-            var center = 180 + (_round(_rotation.houses[next]) + _round(_rotation.houses[house])) / 2;
-            if (next == '1') center += 180;
+            // House 1 starts at 180 degrees
+            var center = 180 + (_round(house(house_number).data("rotation")) + 
+                                _round(house(next).data("rotation"))) / 2;
+            if (house_number == 12) center += 180;
 
-            var rotation = _rotation["house-texts"][house] - center;
-            console.log("Centering text for house", house, "to", center, "by", rotation, "was", _rotation["house-texts"][house]);
-            _rotation["house-texts"][house] = center;
+            var rotation = text.data("rotation") - center;
+            console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("rotation"));
+            text.data("rotation", center);
 
             var matrix = new Snap.Matrix();
             matrix.rotate(rotation, 300, 300);
-            matrix.add(element.transform().localMatrix);
-            element.transform(matrix);
+            matrix.add(text.transform().localMatrix);
+            text.transform(matrix);
+
+            return text;
 
         } else {
-            console.warn("No text for house", house);
+            throw "No text for house " + house_number;
         }
     };
 
     var invalidate = function() {
-        for (var house in _houses) {
+        for (var house = 1; house <= 12; house++) {
             _centerHouseText(house);
         }
-    };
+   };
 
     /**
      * Rotates the wheel so that given angle 'zodiac' is at 180º.
@@ -379,28 +389,28 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     };
 
     var house = function(house, zodiac) {
-        if (_houses[house].id !== undefined) {
-            var element = _svg.select('#' + _houses[house].id);
-            if (element) {
-                var fixed = _round(_rotate(zodiac));
-                var rotation = _rotation.houses[house] - fixed;
+        var element = _svg.select('#house-' + house);
+        if (element) {
+            if (zodiac === undefined) {
+                return element;
+            } 
 
-                console.debug("Rotating house", house, 'to', zodiac, '(', rotation, 'rotation ).');
-                
-                var matrix = new Snap.Matrix();
-                matrix.rotate(rotation, 300, 300);
-                matrix.add(element.transform().localMatrix);
-                element.transform(matrix);
+            var fixed = _round(_rotate(zodiac));
+            var rotation = element.data("rotation") - fixed;
+            
+            console.debug("Rotating house", house, 'to', zodiac, '(', rotation, 'rotation ).');
+            
+            var matrix = new Snap.Matrix();
+            matrix.rotate(rotation, 300, 300);
+            matrix.add(element.transform().localMatrix);
+            element.transform(matrix);
 
-                var next = (parseInt(house) > 6 ? parseInt(house) - 6 : parseInt(house) + 6).toString();
-                _rotation.houses[house] = fixed;
-                _rotation.houses[next] = _round(fixed + 180);
-                console.log("Moved house", house, "to", _rotation.houses[house], 
-                            " / ", next, "to", _rotation.houses[next]);
+            element.data("rotation", fixed);
 
-            } else {
-                throw "not ready";
-            }
+            return element;
+
+        } else {
+            throw "not ready";
         }
     };
 

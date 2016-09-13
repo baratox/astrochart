@@ -56,18 +56,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="395.31777"
-     inkscape:cy="389.25714"
-     inkscape:current-layer="zodiac"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="351.99483"
+     inkscape:cy="281.11682"
+     inkscape:current-layer="layer2"
      inkscape:document-units="px"
      showgrid="false"
-     inkscape:window-width="1280"
-     inkscape:window-height="657"
+     inkscape:window-width="1600"
+     inkscape:window-height="837"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     showguides="true"
+     showguides="false"
      inkscape:guide-bbox="true">
     <sodipodi:guide
        orientation="0,1"
@@ -843,25 +843,85 @@
      inkscape:label="House"
      style="display:inline">
     <rect
+       inkscape:label=""
+       ry="12.397326"
+       rx="1.4043926"
+       transform="matrix(0.35602579,0.61665477,-0.06985582,0.04033127,224.60599,119.01622)"
+       y="300"
+       x="-47.140453"
+       height="24.794653"
+       width="320.20151"
+       id="house-11"
+       style="fill:#999999;fill-opacity:1;stroke:none" />
+    <rect
+       style="fill:#999999;fill-opacity:1;stroke:none"
+       id="house-12"
+       width="228"
+       height="1.9999999"
+       x="181.80763"
+       y="108.80761"
+       transform="matrix(0.8660254,0.50000001,-0.50000009,0.86602535,0,0)"
+       rx="1"
+       ry="0.99999994"
+       inkscape:label="" />
+    <rect
+       inkscape:label=""
+       ry="0.99999994"
+       rx="1"
+       transform="matrix(0.50000001,-0.8660254,0.86602535,0.50000009,0,0)"
+       y="408.80762"
+       x="-109.80757"
+       height="1.9999999"
+       width="227.99998"
+       id="house-9"
+       style="fill:#999999;fill-opacity:1;stroke:none" />
+    <rect
+       inkscape:label=""
+       ry="0.99999994"
+       rx="1"
+       transform="matrix(0,1,-1,0,0,0)"
+       y="-301.5"
+       x="60"
+       height="3.0000002"
+       width="240"
+       id="house-10"
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none" />
+    <rect
+       inkscape:label=""
+       ry="0.99999994"
+       rx="1"
+       transform="matrix(0.86602541,-0.49999999,0.49999994,0.86602544,0,0)"
+       y="408.80762"
+       x="109.80765"
+       height="1.9999999"
+       width="228"
+       id="house-8"
+       style="fill:#999999;fill-opacity:1;stroke:none" />
+    <path
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="m 300,297.5 0,5 238,0 c 1.108,0 2,-0.892 2,-2 l 0,-1 c 0,-1.108 -0.892,-2 -2,-2 l -238,0 z"
+       id="house-7"
+       inkscape:connector-curvature="0" />
+    <rect
        style="fill:#999999;fill-opacity:1;stroke:none"
        id="house-5"
-       width="640.40302"
-       height="24.794653"
-       x="-47.140453"
-       y="300"
-       transform="matrix(0.35602579,0.61665477,-0.06985582,0.04033127,224.60599,119.01622)"
-       rx="1.4043926"
-       ry="12.397326"
+       width="228"
+       height="1.9999999"
+       x="409.80762"
+       y="-110.80762"
+       transform="matrix(0.49999999,0.86602541,-0.86602544,0.49999994,0,0)"
+       rx="1"
+       ry="0.99999994"
        inkscape:label="" />
     <rect
        inkscape:label=""
        ry="0.99999994"
        rx="1"
        transform="matrix(0.8660254,0.50000001,-0.50000009,0.86602535,0,0)"
-       y="108.80761"
-       x="181.80763"
+       y="108.80762"
+       x="409.80759"
        height="1.9999999"
-       width="455.99997"
+       width="228"
        id="house-6"
        style="fill:#999999;fill-opacity:1;stroke:none" />
     <rect
@@ -872,13 +932,13 @@
        y="300"
        x="-47.140453"
        height="24.794653"
-       width="640.40302"
+       width="320.20151"
        id="house-2"
        style="fill:#999999;fill-opacity:1;stroke:none" />
     <rect
        style="fill:#999999;fill-opacity:1;stroke:none"
        id="house-3"
-       width="640.40302"
+       width="320.20151"
        height="24.794653"
        x="-47.140453"
        y="300"
@@ -886,34 +946,28 @@
        rx="1.4043926"
        ry="12.397326"
        inkscape:label="" />
-    <rect
-       inkscape:label=""
-       ry="2"
-       rx="2"
-       y="297.5"
-       x="60"
-       height="5"
-       width="480"
-       id="ascendant"
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none" />
+    <path
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 62 297.5 C 60.892 297.5 60 298.392 60 299.5 L 60 300.5 C 60 301.608 60.892 302.5 62 302.5 L 300 302.5 L 300 297.5 L 62 297.5 z "
+       id="house-1" />
     <rect
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="mc"
-       width="480"
+       id="house-4"
+       width="240"
        height="3.0000002"
-       x="60"
+       x="-540"
        y="-301.5"
-       transform="matrix(0,1,-1,0,0,0)"
+       transform="matrix(0,-1,-1,0,0,0)"
        rx="1"
        ry="0.99999994"
        inkscape:label="" />
     <circle
        style="fill:#ffffff;fill-opacity:1;stroke:#999999;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.9000001;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path3020"
        transform="translate(25,32)"
        cx="275"
        cy="268"
-       r="165" />
+       r="165"
+       id="path3020" />
     <circle
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
        id="path3892"
