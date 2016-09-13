@@ -248,12 +248,12 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             'house-10': {'rotation': 270, 'text-rotation': 90 },
             'house-11': {'rotation': 300, 'text-rotation': 90 },
             'house-12': {'rotation': 330, 'text-rotation': 90 }
-        }
-
+        },
+        'zodiac-rotation': 105
     }, _settings);
 
 
-    var zodiac_rotation = 105;
+    var absolute_zero = settings['zodiac-rotation'];
 
     Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
         // Add everything from the sprites file.
@@ -316,7 +316,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
      *           start of Aries.
      */
     var _abs = function(zodiac) {
-        var absolute = zodiac - zodiac_rotation;
+        var absolute = zodiac - absolute_zero;
         return absolute;
     };
 
@@ -382,16 +382,16 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
             zodiac = _round(zodiac);
 
-            // Sprite is initially rotated 105º clockwise
-            var angleFrom = zodiac_rotation - 105;
-            var angleTo = zodiac - 105;
-            if (angleFrom != angleTo) {
+            if (absolute_zero != zodiac) {
+                var angleFrom = absolute_zero - settings["zodiac-rotation"];
+                var angleTo = zodiac - settings["zodiac-rotation"];
                 console.debug("Rotating zodiac to", zodiac);
                 Snap.animate(angleFrom, angleTo, function(value) {
                     wheel.transform("r" + value + ",300,300");
                 }, 800);
                 
-                zodiac_rotation = zodiac;
+                wheel.data("rotation", angleTo);
+                absolute_zero = zodiac;
             }
 
             return wheel;
