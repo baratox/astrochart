@@ -9,18 +9,18 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
                            'saturn', 'uranus', 'neptune', 'pluto'],
         'houses': {
-            'house-1': {'rotation': 0, 'text-rotation': 90 },
-            'house-2': {'rotation': 30, 'text-rotation': 90 },
-            'house-3': {'rotation': 60, 'text-rotation': 90 },
-            'house-4': {'rotation': 90, 'text-rotation': 90 },
-            'house-5': {'rotation': 120, 'text-rotation': 90 },
-            'house-6': {'rotation': 150, 'text-rotation': 90 },
-            'house-7': {'rotation': 180, 'text-rotation': 90 },
-            'house-8': {'rotation': 210, 'text-rotation': 90 },
-            'house-9': {'rotation': 240, 'text-rotation': 90 },
-            'house-10': {'rotation': 270, 'text-rotation': 90 },
-            'house-11': {'rotation': 300, 'text-rotation': 90 },
-            'house-12': {'rotation': 330, 'text-rotation': 90 }
+            'house-1': {'position': 180 + 0, 'text-position': 90 },
+            'house-2': {'position': 180 + 30, 'text-position': 90 },
+            'house-3': {'position': 180 + 60, 'text-position': 90 },
+            'house-4': {'position': 180 + 90, 'text-position': 90 },
+            'house-5': {'position': 180 + 120, 'text-position': 90 },
+            'house-6': {'position': 180 + 150, 'text-position': 90 },
+            'house-7': {'position': 180 + 180, 'text-position': 90 },
+            'house-8': {'position': 180 + 210, 'text-position': 90 },
+            'house-9': {'position': 180 + 240, 'text-position': 90 },
+            'house-10': {'position': 180 + 270, 'text-position': 90 },
+            'house-11': {'position': 180 + 300, 'text-position': 90 },
+            'house-12': {'position': 180 + 330, 'text-position': 90 }
         },
         'zodiac-rotation': 105
     }, _settings);
@@ -32,17 +32,17 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         // Add everything from the sprites file.
         _svg.append(svg);
 
-        // Initial rotation for houses in the sprites file.
+        // Initial position for houses in the sprites file.
         for (var house = 1; house <= 12; house++) {
             var id = "house-" + house;
             var text = _svg.select("#" + id + "-text");
             if (text) {
-                text.data("rotation", settings["houses"][id]["text-rotation"]);
+                text.data("position", settings["houses"][id]["text-position"]);
             }
 
             var marker = _svg.select("#" + id);
             if (marker) {
-                marker.data("rotation", settings["houses"][id]["rotation"]);
+                marker.data("position", settings["houses"][id]["position"]);
                 marker.data("text", text);
             }
         }
@@ -115,13 +115,12 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         if (text) {
             var next = house_number < 12 ? house_number + 1 : 1;
 
-            // House 1 starts at 180 degrees
-            var center = _round(180 + (house(house_number).data("rotation") + house(next).data("rotation")) / 2);
-            if (house_number == 12) center += 180;
+            var center = _round((house(house_number).data("position") + house(next).data("position")) / 2);
+            if (house_number == 6) center += 180;
 
-            var rotation = _round(text.data("rotation") - center);
-            console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("rotation"));
-            text.data("rotation", center);
+            var rotation = _round(text.data("position") - center);
+            console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("position"));
+            text.data("position", center);
 
             var matrix = new Snap.Matrix();
             matrix.rotate(rotation, 300, 300);
@@ -181,8 +180,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 return element;
             } 
 
-            var absolute = _round(_abs(zodiac));
-            var rotation = _round(element.data("rotation") - absolute);
+            var absolute = _round(_abs(zodiac) + 180);
+            var rotation = _round(element.data("position") - absolute);
             
             console.debug("Rotating house", house, 'to', absolute, '(', rotation, 'rotation ).');
             
@@ -191,7 +190,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             matrix.add(element.transform().localMatrix);
             element.transform(matrix);
 
-            element.data("rotation", absolute);
+            element.data("position", absolute);
 
             return element;
 
@@ -209,13 +208,13 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
             var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
-                angleTo = - _round(180 + _abs(zodiac));
+                angleTo = _round(_abs(zodiac) + 180);
                         
             console.debug("Moving", name, "from", angleFrom, "to", angleTo);
             
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(value, settings["astro-orbit"], settings["center"].x, settings["center"].y);
+                    element.orbit(-value, settings["astro-orbit"], settings["center"].x, settings["center"].y);
                 }, 400);
 
             element.data('position', angleTo);
@@ -227,21 +226,27 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         }
     };
 
+    function _isAspectTarget(target) {
+        if (settings["visible-astros"].indexOf(target) >= 0) {
+            return true;
+        } else if (target in settings["houses"]) {
+            return true;
+        }
+
+        return false;
+    };
+
     // Shows the relationship between two objects in the chart 
     var aspect = function(a, b, value, classes) {
-        if (settings["visible-astros"].indexOf(a) < 0) {
-            throw a + " is unknown"
-        }
-        if (settings["visible-astros"].indexOf(b) < 0) {
-            throw b + " is unknown"
-        }
+        if (!_isAspectTarget(a)) throw a + " is unknown";
+        if (!_isAspectTarget(b)) throw b + " is unknown";
 
         var astro_a = _svg.select("#" + a),
             astro_b = _svg.select("#" + b);
 
-        var point_a = _svg.get_orbit(astro_a.data("position"), settings["aspect-orbit"], 
+        var point_a = _svg.get_orbit(-astro_a.data("position"), settings["aspect-orbit"], 
                                      settings["center"].x, settings["center"].y),
-            point_b = _svg.get_orbit(astro_b.data("position"), settings["aspect-orbit"], 
+            point_b = _svg.get_orbit(-astro_b.data("position"), settings["aspect-orbit"], 
                                      settings["center"].x, settings["center"].y);
 
         // Always use the "smaller" object name first to build the id.
