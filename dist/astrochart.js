@@ -236,6 +236,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
                            'saturn', 'uranus', 'neptune', 'pluto'],
         'houses': {
+            'visibility': "hidden",
             'house-1': {'position': 180 + 0, 'text-position': 90 },
             'house-2': {'position': 180 + 30, 'text-position': 90 },
             'house-3': {'position': 180 + 60, 'text-position': 90 },
@@ -273,6 +274,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 marker.data("text", text);
             }
         }
+        
+        _svg.select("#houses").attr({"visibility": settings["houses"]["visibility"]});
 
         console.debug("Finished loading zodiac.svg.");
     });
@@ -406,6 +409,12 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             if (zodiac === undefined) {
                 return element;
             } 
+
+            // Show house elements if hidden
+            if (settings["houses"]["visibility"] === "hidden") {
+                settings["houses"]["visibility"] = "visible";
+                _svg.select("#houses").attr({"visibility": "visible"});
+            }
 
             var absolute = _round(_abs(zodiac) + 180);
             var rotation = _round(element.data("position") - absolute);

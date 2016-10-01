@@ -57,9 +57,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="351.99483"
-     inkscape:cy="281.11682"
-     inkscape:current-layer="layer2"
+     inkscape:cx="291.28502"
+     inkscape:cy="422.59478"
+     inkscape:current-layer="layer3"
      inkscape:document-units="px"
      showgrid="false"
      inkscape:window-width="1600"
@@ -839,7 +839,7 @@
   </g>
   <g
      inkscape:groupmode="layer"
-     id="layer2"
+     id="houses"
      inkscape:label="House"
      style="display:inline">
     <rect
@@ -899,7 +899,7 @@
        style="fill:#999999;fill-opacity:1;stroke:none" />
     <path
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="m 300,297.5 0,5 238,0 c 1.108,0 2,-0.892 2,-2 l 0,-1 c 0,-1.108 -0.892,-2 -2,-2 l -238,0 z"
+       d="m 540,297.5 0,5 -238,0 c -1.108,0 -2,-0.892 -2,-2 l 0,-1 c 0,-1.108 0.892,-2 2,-2 l 238,0 z"
        id="house-7"
        inkscape:connector-curvature="0" />
     <rect
@@ -948,8 +948,9 @@
        inkscape:label="" />
     <path
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="M 62 297.5 C 60.892 297.5 60 298.392 60 299.5 L 60 300.5 C 60 301.608 60.892 302.5 62 302.5 L 300 302.5 L 300 297.5 L 62 297.5 z "
-       id="house-1" />
+       d="m 298,297.5 c 1.108,0 2,0.892 2,2 l 0,1 c 0,1.108 -0.892,2 -2,2 l -238,0 0,-5 238,0 z"
+       id="house-1"
+       inkscape:connector-curvature="0" />
     <rect
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
        id="house-4"
@@ -961,19 +962,6 @@
        rx="1"
        ry="0.99999994"
        inkscape:label="" />
-    <circle
-       style="fill:#ffffff;fill-opacity:1;stroke:#999999;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.9000001;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       transform="translate(25,32)"
-       cx="275"
-       cy="268"
-       r="165"
-       id="path3020" />
-    <circle
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="path3892"
-       cx="300"
-       cy="300"
-       r="13.5" />
     <g
        transform="translate(-8.8602004,-1.0146835)"
        id="house-1-text"
@@ -1219,5 +1207,18 @@
        inkscape:randomized="0"
        d="m 289.33948,281.22765 -137.85796,79.59233 -159.1846584,0 -137.8579616,-79.59233 -79.59233,-137.85796 0,-159.18466 79.59233,-137.85796 137.8579596,-79.59233 159.1846604,0 137.85796,79.59233 79.59233,137.857958 0,159.184662 z"
        transform="matrix(0.94048777,0,0,0.94048777,1030.3891,240.01817)" />
+    <circle
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#999999;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.9000001;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       transform="translate(25,32)"
+       cx="275"
+       cy="268"
+       r="165"
+       id="path3020" />
+    <circle
+       style="display:inline;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       id="path3892"
+       cx="300"
+       cy="300"
+       r="13.5" />
   </g>
 </svg>
