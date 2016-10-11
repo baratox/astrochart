@@ -33,6 +33,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         // Add everything from the sprites file.
         _svg.append(svg);
 
+        _svg.select("#zodiac").transformOriginal();
+
         // Initial position for houses in the sprites file.
         for (var house = 1; house <= 12; house++) {
             var id = "house-" + house;
@@ -160,10 +162,12 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             if (absolute_zero != zodiac) {
                 var angleFrom = absolute_zero - settings["zodiac-rotation"];
                 var angleTo = zodiac - settings["zodiac-rotation"];
-                console.debug("Rotating zodiac to", zodiac);
+                console.debug("Rotating zodiac to", zodiac, angleFrom, angleTo);
                 Snap.animate(angleFrom, angleTo, function(value) {
-                    wheel.transform("r" + value + ",300,300");
-                }, 800);
+                    var matrix = new Snap.Matrix();
+                    matrix.rotate(value, 300, 300);
+                    wheel.transformOriginal(matrix);
+                }, Math.abs(angleTo - angleFrom) * 9, mina.easeout);
                 
                 wheel.data("rotation", angleTo);
                 absolute_zero = zodiac;
