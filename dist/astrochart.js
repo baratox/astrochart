@@ -230,8 +230,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
     var settings = jQuery.extend({
         'sprites-planet-size': 108,
         'center': {'x': 300, 'y': 300},
-        'astro-orbit': 198,
-        'aspect-orbit': 164,
+        'astro-orbit': 207,
+        'aspect-orbit': 174,
         'aspect-maximun-stroke': 4,
         'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
                            'saturn', 'uranus', 'neptune', 'pluto'],

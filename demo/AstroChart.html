@@ -21,14 +21,17 @@
         svg line.sextile,
         svg line.trine {
             stroke: #7d7;
+            stroke-linecap: round;
         }
 
         svg line.opposite {
             stroke: #d77;
+            stroke-linecap: round;
         }
 
         svg line.square {
             stroke: #77d;
+            stroke-linecap: round;
         }
 
 
@@ -51,7 +54,7 @@
             window.chart = chart;
             
             setTimeout(function() {
-                // chart.ascendant(247.05344505972144);
+                chart.ascendant(247.05344505972144);
                 chart.move({
                     'sun': 289.43111851230805,
                     'moon': 56.472178681937805,
@@ -90,8 +93,7 @@
                     {"a":"jupiter", "b":"saturn",   "value":0.7332080503597126,     "classes":"square"},
                     {"a":"jupiter", "b":"uranus",   "value":0.49213399384539686,    "classes":"square"},
                     {"a":"jupiter", "b":"pluto",    "value":0.060464167086448126,   "classes":"trine"},
-                    {"a":"neptune", "b":"pluto",    "value":0.6374376617621493,     "classes":"sextile"},
-                    {"a":"house-10", "b":"sun",      "value":0.6374376617621493,     "classes":""}]);
+                    {"a":"neptune", "b":"pluto",    "value":0.6374376617621493,     "classes":"sextile"}]);
             }, 1000);
 
         })();
