@@ -85,13 +85,15 @@ window.Astrochart = (function(w, h, overridenSettings) {
         'sprites-base-url': "/dist/image"
     }
 
+    var signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", 
+                 "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
+
     var snap;
     var orbit;
 
     var theme;
 
     var now = {
-        'ascendant': 0,
         'houses': { 
             1 : 0,
             2 : 30,
@@ -106,17 +108,18 @@ window.Astrochart = (function(w, h, overridenSettings) {
             11 : 300,
             12 : 330
         },
+        'ascendant': { 'degrees': 0, 'sign': "aries", 'house': 1 },
         'planets': {
-            'sun': 0,
-            'moon': 0,
-            'mercury': 0, 
-            'venus': 0,
-            'mars': 0,
-            'jupiter': 0,
-            'saturn': 0,
-            'uranus': 0,
-            'neptune': 0,
-            'pluto': 0
+            'sun':     { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'moon':    { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'mercury': { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'venus':   { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'mars':    { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'jupiter': { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'saturn':  { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'uranus':  { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'neptune': { 'degrees': 0, 'sign': "aries", "house": 1 },
+            'pluto':   { 'degrees': 0, 'sign': "aries", "house": 1 }
         }
     };
 
@@ -136,10 +139,42 @@ window.Astrochart = (function(w, h, overridenSettings) {
         theme = new Astrochart.AstrochartTheme(snap, settings);
     };
 
+    /**
+     * Gets an object with astrological information for the given angle.
+     */
+    function astrologicalInfo(degrees) {
+        if (degrees < 0 || degrees > 360) {
+            throw "Invalid degree " + degrees;
+        }
+
+        var house;
+        for (var i = 1; i <= 12; i++) {
+            var begin = now.houses[i]
+            var next = i < 12 ? now.houses[i + 1] : now.houses[1];
+            if (begin < next) {
+                if (degrees >= begin && degrees < next) {
+                    house = i;
+                    break;
+                }
+            } else {
+                if (degrees >= begin || degrees < next) {
+                    house = i;
+                    break;
+                }
+            }
+        }
+
+        return {
+            'degrees': degrees,
+            'sign': signs[Math.floor(degrees / 30)],
+            'house': house
+        }
+    }
+
     function ascendant(degrees) {
         if (degrees !== undefined) {
             theme.ascendant(degrees);
-            now.ascendant = degrees;
+            now.ascendant = astrologicalInfo(degrees);
            
             return this;
 
@@ -159,7 +194,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
         if (degrees !== undefined) {
             theme.astro(planet, degrees);
-            now.planets[planet] = degrees;
+            now.planets[planet] = astrologicalInfo(degrees);
             return this;
 
         } else {
@@ -181,7 +216,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
         if (degrees !== undefined) {
             theme.house(house, degrees);
-            now.houses[house] = degrees;
+            now.houses[house] = astrologicalInfo(degrees);
             return this;
 
         } else {
