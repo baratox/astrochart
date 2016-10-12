@@ -31,7 +31,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
     Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
         // Add everything from the sprites file.
-        _svg.append(svg);
+        _svg.append(svg.select("#zodiac"));
+        _svg.append(svg.select("#houses"));
+        _svg.append(svg.select("#top"));
 
         _svg.select("#zodiac").transformOriginal();
 
