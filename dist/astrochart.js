@@ -267,6 +267,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'center': {'x': 300, 'y': 300},
         'astro-orbit': 207,
         'aspect-orbit': 174,
+        'aspect-orbit-synastry': 127,
         'aspect-maximun-stroke': 4,
         'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
                            'saturn', 'uranus', 'neptune', 'pluto'],
@@ -285,7 +286,10 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             'house-11': {'position': 180 + 300, 'text-position': 90 },
             'house-12': {'position': 180 + 330, 'text-position': 90 }
         },
-        'zodiac-rotation': 105
+        'zodiac-rotation': 105,
+        'synastry': {
+            'visible': true
+        }
     }, _settings);
 
 
@@ -295,6 +299,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
         _svg.append(svg.select("#houses"));
+        _svg.append(svg.select("#synastry"));
         _svg.append(svg.select("#top"));
 
         _svg.select("#zodiac").transformOriginal();
@@ -315,6 +320,8 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         }
         
         _svg.select("#houses").attr({"visibility": settings["houses"]["visibility"]});
+
+        synastry(settings["synastry"]["visible"]);
 
         console.debug("Finished loading zodiac.svg.");
     });
@@ -521,9 +528,16 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         var astro_a = _svg.select("#" + a),
             astro_b = _svg.select("#" + b);
 
-        var point_a = _svg.get_orbit(-astro_a.data("position"), settings["aspect-orbit"], 
+        var orbit;
+        if (settings["synastry"]["visible"]) {
+            orbit = settings["aspect-orbit-synastry"];
+        } else {
+            orbit = settings["aspect-orbit"];
+        }
+
+        var point_a = _svg.get_orbit(-astro_a.data("position"), orbit, 
                                      settings["center"].x, settings["center"].y),
-            point_b = _svg.get_orbit(-astro_b.data("position"), settings["aspect-orbit"], 
+            point_b = _svg.get_orbit(-astro_b.data("position"), orbit, 
                                      settings["center"].x, settings["center"].y);
 
         // Always use the "smaller" object name first to build the id.
@@ -546,6 +560,14 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
         return line;
     };
+
+    function synastry(visible) {
+        settings["synastry"]["visible"] = visible;
+
+        _svg.select("#synastry-houses").attr({"visibility": visible ? "visible" : "hidden"});
+        // Hide synastry cover if synastry is visible
+        _svg.select("#cover").attr({"visibility": visible ? "hidden" : "visible"});
+    }
 
     // Builds the public API for an AstrochartTheme.
     return {
