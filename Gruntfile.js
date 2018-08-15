@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 
         // Clean distribution files
         clean: ["<%= dirs.build %>/**"],
-        
+
         concat: {
           js: {
             dest: "<%= dirs.build %>/astrochart.js",
@@ -52,25 +52,12 @@ module.exports = function(grunt) {
         // Copy static files
         copy: {
             main: {
-                files: [{ 
-                    expand: true, 
-                    cwd: "src/image", 
-                    src: ["*"], 
-                    dest: "<%= dirs.build %>/image/" 
+                files: [{
+                    expand: true,
+                    cwd: "src/image",
+                    src: ["*"],
+                    dest: "<%= dirs.build %>/image/"
                   }]
-            }
-        },
-
-        // Minify and Concat archives
-        uglify: {
-            options: {
-                mangle: false,
-                banner: "<%= banner %>"
-            },
-            dist: {
-              files: {
-                  "<%= dirs.build %>/astrochart.min.js": "<%= dirs.build %>/astrochart.js"
-              }
             }
         },
 
@@ -122,7 +109,7 @@ module.exports = function(grunt) {
     // --------------------------
 
     // Observe changes, concatenate, minify and validate files
-    grunt.registerTask( "default", [ "concat", "copy", "uglify", "notify:js" ]);
+    grunt.registerTask( "default", [ "concat", "copy", "notify:js" ]);
 
     grunt.registerTask( "serve", [ "default", "connect:main", "watch" ]);
 
