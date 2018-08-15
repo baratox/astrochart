@@ -4,17 +4,16 @@ services:
         build:
             context: .
             args:
+                # User Id and Group Id for the local user at the host.
                 - UID=1000
                 - GID=985
-
-        # Serve the React Native or Expo app
         working_dir: '/home/node/Astrochart'
-        # command: bash -c "yarn install && bower install && grunt serve"
-        command: bash -c "tail -f /dev/null"
+        command: bash -c "yarn install && bower install && grunt serve"
 
         ports:
             # From `grunt serve`
             - 9001:9001
         volumes:
-            # Downloaded and installed Android SDKs are kept in the workspace directory (host)
+            # Mount the project directory to the container, so that changes 
+            # made inside the container reflect on the host.
             - ./:/home/node/Astrochart/
