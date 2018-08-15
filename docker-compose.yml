@@ -1,0 +1,20 @@
+version: '3.3'
+services:
+    astrochart:
+        build:
+            context: .
+            args:
+                - UID=1000
+                - GID=985
+
+        # Serve the React Native or Expo app
+        working_dir: '/home/node/Astrochart'
+        # command: bash -c "yarn install && bower install && grunt serve"
+        command: bash -c "tail -f /dev/null"
+
+        ports:
+            # From `grunt serve`
+            - 9001:9001
+        volumes:
+            # Downloaded and installed Android SDKs are kept in the workspace directory (host)
+            - ./:/home/node/Astrochart/
