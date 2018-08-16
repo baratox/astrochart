@@ -78,23 +78,22 @@ Snap.plugin(function(Snap, Element, Paper) {
     };
 
 });
-window.Astrochart = (function(w, h, overridenSettings) {
+window.Astrochart = (function(overridenSettings) {
     "use strict";
 
     var settings = {
-        'sprites-base-url': "/dist/image"
+        'sprites-base-url': "/dist/image",
     }
 
-    var signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", 
-                 "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
+    const signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
+                   "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 
-    var snap;
     var orbit;
 
     var theme;
 
     var now = {
-        'houses': { 
+        'houses': {
             1 : 0,
             2 : 30,
             3 : 60,
@@ -124,19 +123,12 @@ window.Astrochart = (function(w, h, overridenSettings) {
     };
 
 
-    function _Astrochart(w, h, overridenSettings) {
+    function _Astrochart(overridenSettings) {
         if (overridenSettings) {
             settings = $.extend(settings, overridenSettings);
         }
 
-        snap = Snap(w, h);
-        snap.attr({ 
-            viewBox: '0 0 600 600',
-            height: '100%',
-            width: '100%' 
-        });
-
-        theme = new Astrochart.AstrochartTheme(snap, settings);
+        theme = new Astrochart.AstrochartTheme(settings);
     };
 
     /**
@@ -175,7 +167,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
         if (degrees !== undefined) {
             theme.ascendant(degrees);
             now.ascendant = astrologicalInfo(degrees);
-           
+
             return this;
 
         } else {
@@ -247,10 +239,9 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
 
     // Initialize this instance and return public API.
-    _Astrochart(w !== undefined ? w : 600, h, overridenSettings);
+    _Astrochart(overridenSettings);
 
     return {
-        snap: snap,
         theme: theme,
         ascendant: ascendant,
         move: move,
@@ -260,7 +251,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
 });
 
-Astrochart.AstrochartTheme = function(_svg, _settings) {
+Astrochart.AstrochartTheme = function( _settings) {
 
     var settings = jQuery.extend({
         'sprites-planet-size': 108,
@@ -269,7 +260,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'aspect-orbit': 174,
         'aspect-orbit-synastry': 127,
         'aspect-maximun-stroke': 4,
-        'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 
+        'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter',
                            'saturn', 'uranus', 'neptune', 'pluto'],
         'houses': {
             'visibility': "hidden",
@@ -289,11 +280,20 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         'zodiac-rotation': 105,
         'synastry': {
             'visible': true
-        }
+        },
+        'width': 600,
+        'height': 600,
     }, _settings);
 
 
     var absolute_zero = settings['zodiac-rotation'];
+
+    var _svg = Snap(settings['width'], settings['height']);
+    _svg.attr({
+        viewBox: '0 0 600 600',
+        height: '100%',
+        width: '100%'
+    });
 
     Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
         // Add everything from the sprites file.
@@ -318,7 +318,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                 marker.data("text", text);
             }
         }
-        
+
         _svg.select("#houses").attr({"visibility": settings["houses"]["visibility"]});
 
         synastry(settings["synastry"]["visible"]);
@@ -359,9 +359,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
 
     /**
-     * Gets the absolute rotation angle (0º at three o'clock) 
+     * Gets the absolute rotation angle (0º at three o'clock)
      * for the given zodiac-originated angle.
-     * - zodiac: Zodiac-originated angle, with 0º at the 
+     * - zodiac: Zodiac-originated angle, with 0º at the
      *           start of Aries.
      */
     var _abs = function(zodiac) {
@@ -418,7 +418,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
     /**
      * Rotates the wheel so that given angle 'zodiac' is at 180º.
-     * - zodiac: Zodiac-originated angle, with 0º at the 
+     * - zodiac: Zodiac-originated angle, with 0º at the
      *           start of Aries.
      */
     var ascendant = function(zodiac) {
@@ -439,7 +439,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
                     matrix.rotate(value, 300, 300);
                     wheel.transformOriginal(matrix);
                 }, Math.abs(angleTo - angleFrom) * 9, mina.easeout);
-                
+
                 wheel.data("rotation", angleTo);
                 absolute_zero = zodiac;
             }
@@ -451,12 +451,12 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         }
     };
 
-    var house = function(house, zodiac) {
+    var house = function(house, zodiac, synastry = false) {
         var element = _svg.select('#house-' + house);
         if (element) {
             if (zodiac === undefined) {
                 return element;
-            } 
+            }
 
             // Show house elements if hidden
             if (settings["houses"]["visibility"] === "hidden") {
@@ -466,9 +466,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
 
             var absolute = _round(_abs(zodiac) + 180);
             var rotation = _round(element.data("position") - absolute);
-            
+
             console.debug("Rotating house", house, 'to', absolute, '(', rotation, 'rotation ).');
-            
+
             var matrix = new Snap.Matrix();
             matrix.rotate(rotation, 300, 300);
             matrix.add(element.transform().localMatrix);
@@ -493,9 +493,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
                 angleTo = _round(_abs(zodiac) + 180);
-                        
+
             console.debug("Moving", name, "from", angleFrom, "to", angleTo);
-            
+
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
                     element.orbit(-value, settings["astro-orbit"], settings["center"].x, settings["center"].y);
@@ -520,7 +520,7 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         return false;
     };
 
-    // Shows the relationship between two objects in the chart 
+    // Shows the relationship between two objects in the chart
     var aspect = function(a, b, value, classes) {
         if (!_isAspectTarget(a)) throw a + " is unknown";
         if (!_isAspectTarget(b)) throw b + " is unknown";
@@ -535,9 +535,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
             orbit = settings["aspect-orbit"];
         }
 
-        var point_a = _svg.get_orbit(-astro_a.data("position"), orbit, 
+        var point_a = _svg.get_orbit(-astro_a.data("position"), orbit,
                                      settings["center"].x, settings["center"].y),
-            point_b = _svg.get_orbit(-astro_b.data("position"), orbit, 
+            point_b = _svg.get_orbit(-astro_b.data("position"), orbit,
                                      settings["center"].x, settings["center"].y);
 
         // Always use the "smaller" object name first to build the id.
@@ -552,9 +552,9 @@ Astrochart.AstrochartTheme = function(_svg, _settings) {
         } else {
             line.attr({
                 'class': classes,
-                'x1': point_a.x, 'y1': point_a.y, 
+                'x1': point_a.x, 'y1': point_a.y,
                 'x2': point_b.x, 'y2': point_b.y,
-                'strokeWidth': value * settings["aspect-maximun-stroke"] 
+                'strokeWidth': value * settings["aspect-maximun-stroke"]
             });
         }
 

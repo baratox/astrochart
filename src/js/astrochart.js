@@ -1,20 +1,19 @@
-window.Astrochart = (function(w, h, overridenSettings) {
+window.Astrochart = (function(overridenSettings) {
     "use strict";
 
     var settings = {
-        'sprites-base-url': "/dist/image"
+        'sprites-base-url': "/dist/image",
     }
 
-    var signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", 
-                 "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
+    const signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
+                   "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
 
-    var snap;
     var orbit;
 
     var theme;
 
     var now = {
-        'houses': { 
+        'houses': {
             1 : 0,
             2 : 30,
             3 : 60,
@@ -44,19 +43,12 @@ window.Astrochart = (function(w, h, overridenSettings) {
     };
 
 
-    function _Astrochart(w, h, overridenSettings) {
+    function _Astrochart(overridenSettings) {
         if (overridenSettings) {
             settings = $.extend(settings, overridenSettings);
         }
 
-        snap = Snap(w, h);
-        snap.attr({ 
-            viewBox: '0 0 600 600',
-            height: '100%',
-            width: '100%' 
-        });
-
-        theme = new Astrochart.AstrochartTheme(snap, settings);
+        theme = new Astrochart.AstrochartTheme(settings);
     };
 
     /**
@@ -95,7 +87,7 @@ window.Astrochart = (function(w, h, overridenSettings) {
         if (degrees !== undefined) {
             theme.ascendant(degrees);
             now.ascendant = astrologicalInfo(degrees);
-           
+
             return this;
 
         } else {
@@ -167,10 +159,9 @@ window.Astrochart = (function(w, h, overridenSettings) {
 
 
     // Initialize this instance and return public API.
-    _Astrochart(w !== undefined ? w : 600, h, overridenSettings);
+    _Astrochart(overridenSettings);
 
     return {
-        snap: snap,
         theme: theme,
         ascendant: ascendant,
         move: move,

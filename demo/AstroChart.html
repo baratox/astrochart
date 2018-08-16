@@ -38,23 +38,20 @@
     </style>
 </head>
 <body>
-    <div class="map">
-        <svg></svg>
-    </div>
-
     <script type="text/javascript" src="/lib/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="/lib/Snap.svg/dist/snap.svg.js"></script>
     <script type="text/javascript" src="/dist/astrochart.js"></script>
-    
+
     <script type="text/javascript">
         "use strict";
         (function() {
             // Selfie
-            var chart = Astrochart('.map svg');
+            var chart = Astrochart();
             window.chart = chart;
-            
+
             setTimeout(function() {
                 chart.ascendant(247.05344505972144);
+
                 chart.move({
                     'sun': 289.43111851230805,
                     'moon': 56.472178681937805,
@@ -67,10 +64,10 @@
                     'neptune': 276.033244809184,
                     'pluto': 219.6588681915625
                 });
-            
+
                 chart.house({
                   1: 247.05344505972144,
-                  2: 272.4612178352306,        
+                  2: 272.4612178352306,
                   3: 296.7019185829098,
                   4: 323.31848957534123,
                   5: 354.9546190176404,
