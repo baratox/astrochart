@@ -2,6 +2,4 @@
 *.log
 node_modules
 lib
-
-# Distribution files are needed to publish as a bower package.
-# dist
+dist/
