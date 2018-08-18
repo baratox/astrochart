@@ -1,172 +1,161 @@
-window.Astrochart = (function(overridenSettings) {
-    "use strict";
+"use strict";
 
-    var settings = {
-        'sprites-base-url': "/dist/image",
+const defaultSettings = {
+    'sprites-base-url': "/dist/image",
+    'signs': ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
+               "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"],
+}
+
+function toDegree(position) {
+    if (position) {
+        return position > 0 ? position % 360 : 360 + (position % 360)
+    } else {
+        return 0
+    }
+}
+
+function iterateIfCollection(argument, value, callback) {
+    if (typeof argument  === "object") {
+        var updated = {}
+        for (var key in argument) {
+
+
+            updated[key] = callback(key, argument[key])
+        }
+
+        return updated
+
+    } else if (typeof argument === "string" || typeof argument === "number") {
+        return callback(argument, value)
+    }
+}
+
+
+class AstroEvent {
+    constructor(chart, ascendant, orbs, houses) {
+        this.chart = chart
+
+        this.event = {
+            ascendant: ascendant || 0,
+            orbs: orbs || {
+                'sun': 0,
+                'moon': 0,
+                'mercury': 0,
+                'venus': 0,
+                'mars': 0,
+                'jupiter': 0,
+                'saturn': 0,
+                'uranus': 0,
+                'neptune': 0,
+                'pluto': 0,
+            },
+            houses: houses || {
+                1: 0,
+                2: 30,
+                3: 60,
+                4: 90,
+                5: 120,
+                6: 150,
+                7: 180,
+                8: 210,
+                9: 240,
+                10: 270,
+                11: 300,
+                12: 330,
+            }
+        }
     }
 
-    const signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
-                   "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
-
-    var orbit;
-
-    var theme;
-
-    var now = {
-        'houses': {
-            1 : 0,
-            2 : 30,
-            3 : 60,
-            4 : 90,
-            5 : 120,
-            6 : 150,
-            7 : 180,
-            8 : 210,
-            9 : 240,
-            10 : 270,
-            11 : 300,
-            12 : 330
-        },
-        'ascendant': { 'degrees': 0, 'sign': "aries", 'house': 1 },
-        'planets': {
-            'sun':     { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'moon':    { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'mercury': { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'venus':   { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'mars':    { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'jupiter': { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'saturn':  { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'uranus':  { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'neptune': { 'degrees': 0, 'sign': "aries", "house": 1 },
-            'pluto':   { 'degrees': 0, 'sign': "aries", "house": 1 }
-        }
-    };
-
-
-    function _Astrochart(overridenSettings) {
-        if (overridenSettings) {
-            settings = $.extend(settings, overridenSettings);
-        }
-
-        theme = new Astrochart.AstrochartTheme(settings);
-    };
-
-    /**
-     * Gets an object with astrological information for the given angle.
-     */
-    function astrologicalInfo(degrees) {
-        if (degrees < 0 || degrees > 360) {
-            throw "Invalid degree " + degrees;
-        }
-
-        var house;
+    getHouseAt(position) {
+        position = toDegree(position)
         for (var i = 1; i <= 12; i++) {
-            var begin = now.houses[i]
-            var next = i < 12 ? now.houses[i + 1] : now.houses[1];
+            var begin = this.event.houses[i]
+            var next = i < 12 ? this.event.houses[i + 1] : this.event.houses[1]
             if (begin < next) {
-                if (degrees >= begin && degrees < next) {
-                    house = i;
-                    break;
+                if (position >= begin && position < next) {
+                    return i
                 }
             } else {
-                if (degrees >= begin || degrees < next) {
-                    house = i;
-                    break;
+                if (position >= begin || position < next) {
+                    return i
                 }
             }
         }
 
-        return {
-            'degrees': degrees,
-            'sign': signs[Math.floor(degrees / 30)],
-            'house': house
-        }
+        return undefined
     }
 
-    function ascendant(degrees) {
-        if (degrees !== undefined) {
-            theme.ascendant(degrees);
-            now.ascendant = astrologicalInfo(degrees);
-
-            return this;
-
-        } else {
-            return now.ascendant;
-        }
-    };
-
-    function move(planets, degrees) {
-        return iterateIfCollection(planets, degrees, _move);
+    describe(position) {
+        position = toDegree(position)
+        return $.extend(this.chart.describe(position), {
+            'house': this.getHouseAt(position),
+        })
     }
 
-    function _move(planet, degrees) {
-        if (now.planets[planet] === undefined) {
-            return false;
+    ascendant(position) {
+        if (position !== undefined) {
+            this.event.ascendant = toDegree(position)
+            console.log("Ascendant:", position, this.event.ascendant)
+            this.chart.theme.ascendant(this.event.ascendant)
         }
 
-        if (degrees !== undefined) {
-            theme.astro(planet, degrees);
-            now.planets[planet] = astrologicalInfo(degrees);
-            return this;
-
-        } else {
-            return now.planets[planet];
-        }
-    };
-
-    function house(houses, degrees) {
-        var result = iterateIfCollection(houses, degrees, _house);
-        theme.invalidate();
-        return result;
-    };
-
-    function _house(house, degrees) {
-        house = typeof house !== "number" ? parseInt(house) : house;
-        if (now.houses[house] === undefined) {
-            return false;
-        }
-
-        if (degrees !== undefined) {
-            theme.house(house, degrees);
-            now.houses[house] = astrologicalInfo(degrees);
-            return this;
-
-        } else {
-            return now.houses[house];
-        }
-    };
-
-    function aspect(aspects) {
-        for (var i in aspects) {
-            var aspect = aspects[i];
-            theme.aspect(aspect.a, aspect.b, aspect.value, aspect.classes);
-        }
+        return this.describe(this.event.ascendant)
     }
 
-
-    function iterateIfCollection(argument, parameter, callback) {
-        if (typeof argument === "object") {
-
-            for (var i in argument) {
-                callback(i, argument[i]);
+    orb(orbs, position) {
+        return iterateIfCollection(orbs, position, (orb, position) => {
+            if (position !== undefined) {
+                this.event.orbs[orb] = toDegree(position)
+                this.chart.theme.astro(orb, position)
             }
-            return this;
 
-        } else if (typeof argument === "string" || typeof argument === "number") {
-            return callback(argument, parameter);
+            return this.describe(this.event.orbs[orb])
+        })
+    }
+
+    house(houses, size) {
+        return iterateIfCollection(houses, size, (house, size) => {
+            if (size !== undefined) {
+                this.event.houses[house] = toDegree(size)
+                this.chart.theme.house(house, size)
+                this.chart.theme.invalidate()
+            }
+            return this.event.houses[house]
+        })
+    }
+}
+
+class Astrochart {
+
+    constructor(settings) {
+        this.settings = $.extend(defaultSettings, settings)
+        this.theme = new Astrochart.AstrochartTheme(this.settings)
+        this.events = [new AstroEvent(this)]
+    }
+
+    describe(position) {
+        return {
+            position,
+            sign: this.settings.signs[Math.floor(position / 30)],
         }
-    };
+    }
+
+    event(index) {
+        if (index !== undefined) {
+            return this.events[index]
+
+        } else {
+            return this.events[0]
+        }
+    }
+
+    aspect(aspects) {
+        return iterateIfCollection(aspects, null, (i, aspect) => {
+            this.theme.aspect(aspect.a, aspect.b, aspect.value, aspect.classes);
+            return aspect
+        })
+    }
+}
 
 
-    // Initialize this instance and return public API.
-    _Astrochart(overridenSettings);
-
-    return {
-        theme: theme,
-        ascendant: ascendant,
-        move: move,
-        house: house,
-        aspect: aspect
-    };
-
-});
+window.Astrochart = Astrochart

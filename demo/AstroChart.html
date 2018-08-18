@@ -46,13 +46,15 @@
         "use strict";
         (function() {
             // Selfie
-            var chart = Astrochart();
+            var chart = new Astrochart();
             window.chart = chart;
 
             setTimeout(function() {
-                chart.ascendant(247.05344505972144);
+                console.log(chart.event())
 
-                chart.move({
+                chart.event().ascendant(247.05344505972144);
+
+                chart.event().orb({
                     'sun': 289.43111851230805,
                     'moon': 56.472178681937805,
                     'mercury': 287.9038848534529,
@@ -65,7 +67,7 @@
                     'pluto': 219.6588681915625
                 });
 
-                chart.house({
+                chart.event().house({
                   1: 247.05344505972144,
                   2: 272.4612178352306,
                   3: 296.7019185829098,
@@ -91,7 +93,7 @@
                     {"a":"jupiter", "b":"uranus",   "value":0.49213399384539686,    "classes":"square"},
                     {"a":"jupiter", "b":"pluto",    "value":0.060464167086448126,   "classes":"trine"},
                     {"a":"neptune", "b":"pluto",    "value":0.6374376617621493,     "classes":"sextile"}]);
-            }, 1000);
+                }, 1000);
 
         })();
     </script>
