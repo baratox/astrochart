@@ -26,7 +26,7 @@ Astrochart.AstrochartTheme = function( _settings) {
         },
         'zodiac-rotation': 105,
         'synastry': {
-            'visible': true
+            'visible': false,
         },
         'width': 600,
         'height': 600,
