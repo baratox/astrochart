@@ -113,7 +113,7 @@ class AstroEvent {
     }
 
     house(houses, position) {
-        return iterateIfCollection(houses, position, (house, position) => {
+        var result = iterateIfCollection(houses, position, (house, position) => {
             if (position !== undefined) {
                 position = toDegree(this.event.ascendant - position);
                 this.event.houses[house] = position;
@@ -121,7 +121,10 @@ class AstroEvent {
             }
 
             return this.event.houses[house];
-        })
+        });
+
+        this.chart.theme.invalidate();
+        return result;
     }
 }
 
@@ -155,11 +158,6 @@ class Astrochart {
             return aspect
         })
     }
-
-    invalidate() {
-        this.theme.invalidate();
-    }
-
 }
 
 

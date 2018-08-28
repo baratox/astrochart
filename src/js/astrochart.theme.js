@@ -137,16 +137,16 @@ Astrochart.AstrochartTheme = function( _settings) {
             var next = house_number < 12 ? house_number + 1 : 1;
 
             var center = _round((house(house_number).data("position") + house(next).data("position")) / 2);
-            if (house_number == 6) center += 180;
+            if (house_number == 12) center += 180;
 
             var rotation = _round(text.data("position") - center);
-            console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("position"));
+            // console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("position"));
             text.data("position", center);
 
             var matrix = new Snap.Matrix();
-            matrix.rotate(rotation, 300, 300);
+            matrix.rotate(rotation + 180, 300, 300);
             matrix.add(text.transform().localMatrix);
-            text.transform(matrix);
+            text.transformOriginal(matrix);
 
             return text;
 
@@ -215,7 +215,7 @@ Astrochart.AstrochartTheme = function( _settings) {
             var matrix = new Snap.Matrix();
             matrix.rotate(rotation, 300, 300);
             matrix.add(element.transform().localMatrix);
-            element.transform(matrix);
+            element.transformOriginal(matrix);
 
             element.data("position", absolute);
 
