@@ -11,20 +11,20 @@ Astrochart.AstrochartTheme = function( _settings) {
                            'saturn', 'uranus', 'neptune', 'pluto'],
         'houses': {
             'visibility': "hidden",
-            'house-1': {'position': 180 + 0, 'text-position': 90 },
-            'house-2': {'position': 180 + 30, 'text-position': 90 },
-            'house-3': {'position': 180 + 60, 'text-position': 90 },
-            'house-4': {'position': 180 + 90, 'text-position': 90 },
-            'house-5': {'position': 180 + 120, 'text-position': 90 },
-            'house-6': {'position': 180 + 150, 'text-position': 90 },
-            'house-7': {'position': 180 + 180, 'text-position': 90 },
-            'house-8': {'position': 180 + 210, 'text-position': 90 },
-            'house-9': {'position': 180 + 240, 'text-position': 90 },
-            'house-10': {'position': 180 + 270, 'text-position': 90 },
-            'house-11': {'position': 180 + 300, 'text-position': 90 },
-            'house-12': {'position': 180 + 330, 'text-position': 90 }
+            'house-1': {'position': 0, 'text-position': 90 },
+            'house-2': {'position': 30, 'text-position': 90 },
+            'house-3': {'position': 60, 'text-position': 90 },
+            'house-4': {'position': 90, 'text-position': 90 },
+            'house-5': {'position': 120, 'text-position': 90 },
+            'house-6': {'position': 150, 'text-position': 90 },
+            'house-7': {'position': 180, 'text-position': 90 },
+            'house-8': {'position': 210, 'text-position': 90 },
+            'house-9': {'position': 240, 'text-position': 90 },
+            'house-10': {'position': 270, 'text-position': 90 },
+            'house-11': {'position': 300, 'text-position': 90 },
+            'house-12': {'position': 330, 'text-position': 90 }
         },
-        'zodiac-rotation': 105,
+        'zodiac-rotation': 0,
         'synastry': {
             'visible': false,
         },
@@ -32,8 +32,6 @@ Astrochart.AstrochartTheme = function( _settings) {
         'height': 600,
     }, _settings);
 
-
-    var absolute_zero = settings['zodiac-rotation'];
 
     var _svg = Snap(settings['width'], settings['height']);
     _svg.attr({
@@ -177,19 +175,17 @@ Astrochart.AstrochartTheme = function( _settings) {
 
             zodiac = _round(zodiac);
 
-            if (absolute_zero != zodiac) {
-                var angleFrom = absolute_zero - settings["zodiac-rotation"];
-                var angleTo = zodiac - settings["zodiac-rotation"];
-                console.debug("Rotating zodiac to", zodiac, angleFrom, angleTo);
-                Snap.animate(angleFrom, angleTo, function(value) {
-                    var matrix = new Snap.Matrix();
-                    matrix.rotate(value, 300, 300);
-                    wheel.transformOriginal(matrix);
-                }, Math.abs(angleTo - angleFrom) * 9, mina.easeout);
+            var angleFrom = settings["zodiac-rotation"];
+            var angleTo = zodiac;
+            console.debug("Rotating zodiac to", zodiac, angleFrom, angleTo);
+            Snap.animate(angleFrom, angleTo, function(value) {
+                var matrix = new Snap.Matrix();
+                matrix.rotate(-value, 300, 300);
+                wheel.transformOriginal(matrix);
+            }, Math.abs(angleTo - angleFrom) * 9, mina.easeout);
 
-                wheel.data("rotation", angleTo);
-                absolute_zero = zodiac;
-            }
+            wheel.data("rotation", angleTo);
+            absolute_zero = zodiac;
 
             return wheel;
 
@@ -211,7 +207,7 @@ Astrochart.AstrochartTheme = function( _settings) {
                 _svg.select("#houses").attr({"visibility": "visible"});
             }
 
-            var absolute = _round(_abs(zodiac) + 180);
+            var absolute = _round(zodiac);
             var rotation = _round(element.data("position") - absolute);
 
             console.debug("Rotating house", house, 'to', absolute, '(', rotation, 'rotation ).');
@@ -239,13 +235,13 @@ Astrochart.AstrochartTheme = function( _settings) {
 
             var angleFrom = element.data('position')
                 // Rotate counter-clock, with 0º at the farthest west, the ascendant.
-                angleTo = _round(_abs(zodiac) + 180);
+                angleTo = _round(-zodiac);
 
             console.debug("Moving", name, "from", angleFrom, "to", angleTo);
 
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(-value, settings["astro-orbit"], settings["center"].x, settings["center"].y);
+                    element.orbit(value + 180, settings["astro-orbit"], settings["center"].x, settings["center"].y);
                 }, 400);
 
             element.data('position', angleTo);

@@ -18,8 +18,6 @@ function iterateIfCollection(argument, value, callback) {
     if (typeof argument  === "object") {
         var updated = {}
         for (var key in argument) {
-
-
             updated[key] = callback(key, argument[key])
         }
 
@@ -94,9 +92,9 @@ class AstroEvent {
 
     ascendant(position) {
         if (position !== undefined) {
-            this.event.ascendant = toDegree(position)
-            console.log("Ascendant:", position, this.event.ascendant)
-            this.chart.theme.ascendant(this.event.ascendant)
+            position = toDegree(position);
+            this.event.ascendant = position;
+            this.chart.theme.ascendant(position)
         }
 
         return this.describe(this.event.ascendant)
@@ -105,22 +103,24 @@ class AstroEvent {
     orb(orbs, position) {
         return iterateIfCollection(orbs, position, (orb, position) => {
             if (position !== undefined) {
-                this.event.orbs[orb] = toDegree(position)
-                this.chart.theme.astro(orb, position)
+                position = toDegree(position + this.event.ascendant);
+                this.event.orbs[orb] = position;
+                this.chart.theme.astro(orb, position);
             }
 
             return this.describe(this.event.orbs[orb])
         })
     }
 
-    house(houses, size) {
-        return iterateIfCollection(houses, size, (house, size) => {
-            if (size !== undefined) {
-                this.event.houses[house] = toDegree(size)
-                this.chart.theme.house(house, size)
-                this.chart.theme.invalidate()
+    house(houses, position) {
+        return iterateIfCollection(houses, position, (house, position) => {
+            if (position !== undefined) {
+                position = toDegree(this.event.ascendant - position);
+                this.event.houses[house] = position;
+                this.chart.theme.house(house, position);
             }
-            return this.event.houses[house]
+
+            return this.event.houses[house];
         })
     }
 }
@@ -155,6 +155,11 @@ class Astrochart {
             return aspect
         })
     }
+
+    invalidate() {
+        this.theme.invalidate();
+    }
+
 }
 
 
