@@ -1,11 +1,13 @@
+
+/**
+ * A theme draws the actual map with all provided information.
+ * The theme is composed of two SVG templates
+ **/
 Astrochart.AstrochartTheme = function(_settings) {
 
     var settings = jQuery.extend({
         // Base URL from which to load the `zodiac.svg` and `orbs.svg`.
         'theme-base-url': "/dist/image/",
-
-        // Size in pixels of a single orb sprite in `orbs.svg`.
-        'sprites-planet-size': 108,
 
         // Center of all that exists, around which everything orbits.
         'center': {'x': 300, 'y': 300},
@@ -19,8 +21,14 @@ Astrochart.AstrochartTheme = function(_settings) {
         'aspect-full-stroke': 4,
 
         // The name of all supported orbs: planets, ex-planets, asteroids, etc.
+        // This is also the id for the SVG sprite for it in the template.
         'orbs': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus',
             'neptune', 'pluto'],
+
+        // Id of the SVG element to use as orb sprite when a specific one is not found.
+        'orb-sprite-default': 'planet',
+        // Size in pixels of a single orb sprite in `orbs.svg`.
+        'orb-sprite-size': 108,
 
         'houses': {
             'visible': true,
@@ -66,6 +74,8 @@ Astrochart.AstrochartTheme = function(_settings) {
 
         _svg.select("#zodiac").transformOriginal();
 
+        loadOrbsFromTemplate(svg);
+
         // Initial position for houses in the sprites file.
         for (var house = 1; house <= 12; house++) {
             var id = "house-" + house;
@@ -88,17 +98,17 @@ Astrochart.AstrochartTheme = function(_settings) {
         console.debug("Finished loading zodiac.svg.");
     });
 
-    Snap.load(settings['theme-base-url'] + "orbs.svg", function(svg) {
+    function loadOrbsFromTemplate(svg) {
         for (var i in settings["orbs"]) {
-            loadSpaceObject(svg, settings["orbs"][i], Math.random() * 10000 + 3000);
+            loadSpaceObject(svg, settings["orbs"][i]);
         }
 
-        function loadSpaceObject(svg, name, animationDelay) {
-            console.log("Loading", name)
+        function loadSpaceObject(svg, name) {
             var object = svg.select("#" + name);
+            console.log("Loading", name, object);
             if (!object) {
                 // Create one based on the default planet sprite
-                object = svg.select("#planet").clone();
+                object = svg.select("#" + settings["orb-sprite-default"]).clone();
                 object.attr({'id': name});
             }
             object.data("position", 0);
@@ -107,7 +117,7 @@ Astrochart.AstrochartTheme = function(_settings) {
 
             // Scale the planet down an center it to its coordinates
             var scale = 0.37;
-            var half = scale * settings["sprites-planet-size"]/2;
+            var half = scale * settings["orb-sprite-size"]/2;
 
             var matrix = new Snap.Matrix();
             matrix.translate(-half, -half);
@@ -117,7 +127,7 @@ Astrochart.AstrochartTheme = function(_settings) {
 
             object.orbit(0, settings["orbit-radius"], settings["center"].x, settings["center"].y);
         };
-    });
+    }
 
 
     /**
