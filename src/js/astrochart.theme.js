@@ -6,8 +6,8 @@
 Astrochart.AstrochartTheme = function(_settings) {
 
     var settings = jQuery.extend({
-        // Base URL from which to load the `zodiac.svg` and `orbs.svg`.
-        'theme-base-url': "/dist/image/",
+        // SVG template to load
+        'template': "/dist/image/zodiac.svg",
 
         // Center of all that exists, around which everything orbits.
         'center': {'x': 300, 'y': 300},
@@ -27,13 +27,13 @@ Astrochart.AstrochartTheme = function(_settings) {
 
         // Id of the SVG element to use as orb sprite when a specific one is not found.
         'orb-sprite-default': 'planet',
-        // Size in pixels of a single orb sprite in `orbs.svg`.
+        // Size in pixels of a single orb sprite in the template.
         'orb-sprite-size': 108,
 
         'houses': {
             'visible': true,
             'house-1': {
-                // The angular position for this house in the `zodiac.svg` template.
+                // The angular position for this house in the template.
                 // Starts at the further west and moves counterclockwise.
                 'position': 0,
                 // The angular position for the center of this house's text in the template.
@@ -51,11 +51,11 @@ Astrochart.AstrochartTheme = function(_settings) {
             'house-11': {'position': 300, 'text-position': 270 },
             'house-12': {'position': 330, 'text-position': 270 }
         },
-        // The rotation of the zodiac wheel in the `zodiac.svg` template, considering 0 as the
+        // The rotation of the zodiac wheel in the template, considering 0 as the
         // middlepoint between *Pisces* and *Aries*.
         'zodiac-rotation': 0,
 
-        // Size of the chart from the `zodiac.svg` template
+        // Size of the chart from the template
         'width': 600,
         'height': 600,
     }, _settings);
@@ -66,7 +66,7 @@ Astrochart.AstrochartTheme = function(_settings) {
         viewBox: '0 0 ' + [settings["width"], settings["height"]].join(" "),
     });
 
-    Snap.load(settings['theme-base-url'] + "zodiac.svg", function(svg) {
+    Snap.load(settings['template'], function(svg) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
         _svg.append(svg.select("#houses"));
@@ -95,7 +95,7 @@ Astrochart.AstrochartTheme = function(_settings) {
             "visibility": settings["houses"]["visible"] ? "visible" : "hidden"
         });
 
-        console.debug("Finished loading zodiac.svg.");
+        console.debug("Finished loading template.");
     });
 
     function loadOrbsFromTemplate(svg) {
