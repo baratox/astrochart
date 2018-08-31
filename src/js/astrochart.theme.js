@@ -1,50 +1,67 @@
-Astrochart.AstrochartTheme = function( _settings) {
+Astrochart.AstrochartTheme = function(_settings) {
 
     var settings = jQuery.extend({
+        // Base URL from which to load the `zodiac.svg` and `orbs.svg`.
+        'theme-base-url': "/dist/image/",
+
+        // Size in pixels of a single orb sprite in `orbs.svg`.
         'sprites-planet-size': 108,
+
+        // Center of all that exists, around which everything orbits.
         'center': {'x': 300, 'y': 300},
-        'astro-orbit': 207,
-        'aspect-orbit': 174,
-        'aspect-orbit-synastry': 127,
-        'aspect-maximun-stroke': 4,
-        'visible-astros': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter',
-                           'saturn', 'uranus', 'neptune', 'pluto'],
+        // Radius of the circular orbit for all orbs.
+        'orbit-radius': 207,
+
+        // Radius of the ends of an aspect line.
+        'aspect-radius': 174,
+        // The `strokeWidth` of the line for an aspect between two orbs increases with how strong
+        // the aspect is. This setting is the `strokeWidth` when the aspect is the strongest.
+        'aspect-full-stroke': 4,
+
+        // The name of all supported orbs: planets, ex-planets, asteroids, etc.
+        'orbs': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus',
+            'neptune', 'pluto'],
+
         'houses': {
-            'visibility': "hidden",
-            'house-1': {'position': 0, 'text-position': 90 },
-            'house-2': {'position': 30, 'text-position': 90 },
-            'house-3': {'position': 60, 'text-position': 90 },
-            'house-4': {'position': 90, 'text-position': 90 },
-            'house-5': {'position': 120, 'text-position': 90 },
-            'house-6': {'position': 150, 'text-position': 90 },
-            'house-7': {'position': 180, 'text-position': 90 },
-            'house-8': {'position': 210, 'text-position': 90 },
-            'house-9': {'position': 240, 'text-position': 90 },
-            'house-10': {'position': 270, 'text-position': 90 },
-            'house-11': {'position': 300, 'text-position': 90 },
-            'house-12': {'position': 330, 'text-position': 90 }
+            'visible': true,
+            'house-1': {
+                // The angular position for this house in the `zodiac.svg` template.
+                // Starts at the further west and moves counterclockwise.
+                'position': 0,
+                // The angular position for the center of this house's text in the template.
+                'text-position': 270
+            },
+            'house-2': {'position': 30, 'text-position': 270 },
+            'house-3': {'position': 60, 'text-position': 270 },
+            'house-4': {'position': 90, 'text-position': 270 },
+            'house-5': {'position': 120, 'text-position': 270 },
+            'house-6': {'position': 150, 'text-position': 270 },
+            'house-7': {'position': 180, 'text-position': 270 },
+            'house-8': {'position': 210, 'text-position': 270 },
+            'house-9': {'position': 240, 'text-position': 270 },
+            'house-10': {'position': 270, 'text-position': 270 },
+            'house-11': {'position': 300, 'text-position': 270 },
+            'house-12': {'position': 330, 'text-position': 270 }
         },
+        // The rotation of the zodiac wheel in the `zodiac.svg` template, considering 0 as the
+        // middlepoint between *Pisces* and *Aries*.
         'zodiac-rotation': 0,
-        'synastry': {
-            'visible': false,
-        },
+
+        // Size of the chart from the `zodiac.svg` template
         'width': 600,
         'height': 600,
     }, _settings);
 
 
-    var _svg = Snap(settings['width'], settings['height']);
+    var _svg = Snap();
     _svg.attr({
-        viewBox: '0 0 600 600',
-        height: '100%',
-        width: '100%'
+        viewBox: '0 0 ' + [settings["width"], settings["height"]].join(" "),
     });
 
-    Snap.load(settings['sprites-base-url'] + "/zodiac.svg", function(svg) {
+    Snap.load(settings['theme-base-url'] + "zodiac.svg", function(svg) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
         _svg.append(svg.select("#houses"));
-        _svg.append(svg.select("#synastry"));
         _svg.append(svg.select("#top"));
 
         _svg.select("#zodiac").transformOriginal();
@@ -64,24 +81,24 @@ Astrochart.AstrochartTheme = function( _settings) {
             }
         }
 
-        _svg.select("#houses").attr({"visibility": settings["houses"]["visibility"]});
-
-        synastry(settings["synastry"]["visible"]);
+        _svg.select("#houses").attr({
+            "visibility": settings["houses"]["visible"] ? "visible" : "hidden"
+        });
 
         console.debug("Finished loading zodiac.svg.");
     });
 
-    Snap.load(settings['sprites-base-url'] + "/things.svg", function(svg) {
-        for (var i in settings["visible-astros"]) {
-            loadSpaceObject(svg, settings["visible-astros"][i], Math.random() * 10000 + 3000);
+    Snap.load(settings['theme-base-url'] + "orbs.svg", function(svg) {
+        for (var i in settings["orbs"]) {
+            loadSpaceObject(svg, settings["orbs"][i], Math.random() * 10000 + 3000);
         }
 
         function loadSpaceObject(svg, name, animationDelay) {
             console.log("Loading", name)
-            var object = svg.select("g#" + name);
+            var object = svg.select("#" + name);
             if (!object) {
                 // Create one based on the default planet sprite
-                object = svg.select("g#planet").clone();
+                object = svg.select("#planet").clone();
                 object.attr({'id': name});
             }
             object.data("position", 0);
@@ -98,7 +115,7 @@ Astrochart.AstrochartTheme = function( _settings) {
             object.transform(matrix);
             object.transformOriginal();
 
-            object.orbit(0, settings["astro-orbit"], settings["center"].x, settings["center"].y);
+            object.orbit(0, settings["orbit-radius"], settings["center"].x, settings["center"].y);
         };
     });
 
@@ -144,7 +161,7 @@ Astrochart.AstrochartTheme = function( _settings) {
             text.data("position", center);
 
             var matrix = new Snap.Matrix();
-            matrix.rotate(rotation + 180, 300, 300);
+            matrix.rotate(rotation, 300, 300);
             matrix.add(text.transform().localMatrix);
             text.transformOriginal(matrix);
 
@@ -167,7 +184,7 @@ Astrochart.AstrochartTheme = function( _settings) {
      *           start of Aries.
      */
     var ascendant = function(zodiac) {
-        var wheel = _svg.select("g#zodiac");
+        var wheel = _svg.select("#zodiac");
         if (wheel) {
             if (zodiac === undefined) {
                 return wheel;
@@ -194,17 +211,11 @@ Astrochart.AstrochartTheme = function( _settings) {
         }
     };
 
-    var house = function(house, zodiac, synastry = false) {
+    var house = function(house, zodiac) {
         var element = _svg.select('#house-' + house);
         if (element) {
             if (zodiac === undefined) {
                 return element;
-            }
-
-            // Show house elements if hidden
-            if (settings["houses"]["visibility"] === "hidden") {
-                settings["houses"]["visibility"] = "visible";
-                _svg.select("#houses").attr({"visibility": "visible"});
             }
 
             var absolute = _round(zodiac);
@@ -226,8 +237,8 @@ Astrochart.AstrochartTheme = function( _settings) {
         }
     };
 
-    var astro = function(name, zodiac) {
-        var element = _svg.select("g#" + name);
+    var orb = function(name, zodiac) {
+        var element = _svg.select("#" + name);
         if (element) {
             if (zodiac === undefined) {
                 return element;
@@ -241,7 +252,7 @@ Astrochart.AstrochartTheme = function( _settings) {
 
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(value + 180, settings["astro-orbit"], settings["center"].x, settings["center"].y);
+                    element.orbit(value + 180, settings["orbit-radius"], settings["center"].x, settings["center"].y);
                 }, 400);
 
             element.data('position', angleTo);
@@ -249,12 +260,12 @@ Astrochart.AstrochartTheme = function( _settings) {
             return element;
 
         } else {
-            throw "Astro " + name + " does not exist";
+            throw "Orb " + name + " does not exist";
         }
     };
 
     function _isAspectTarget(target) {
-        if (settings["visible-astros"].indexOf(target) >= 0) {
+        if (settings["orbs"].indexOf(target) >= 0) {
             return true;
         } else if (target in settings["houses"]) {
             return true;
@@ -271,12 +282,7 @@ Astrochart.AstrochartTheme = function( _settings) {
         var astro_a = _svg.select("#" + a),
             astro_b = _svg.select("#" + b);
 
-        var orbit;
-        if (settings["synastry"]["visible"]) {
-            orbit = settings["aspect-orbit-synastry"];
-        } else {
-            orbit = settings["aspect-orbit"];
-        }
+        const orbit = settings["aspect-radius"];
 
         var point_a = _svg.get_orbit(-astro_a.data("position"), orbit,
                                      settings["center"].x, settings["center"].y),
@@ -289,7 +295,7 @@ Astrochart.AstrochartTheme = function( _settings) {
         if (!line) {
             line = _svg.line(point_a.x, point_a.y, point_b.x, point_b.y);
             line.attr({'id': id, 'class': classes});
-            line.attr({'stroke': "#777", 'strokeWidth': value * settings["aspect-maximun-stroke"]});
+            line.attr({'stroke': "#777", 'strokeWidth': value * settings["aspect-full-stroke"]});
             _svg.add(line);
 
         } else {
@@ -297,25 +303,17 @@ Astrochart.AstrochartTheme = function( _settings) {
                 'class': classes,
                 'x1': point_a.x, 'y1': point_a.y,
                 'x2': point_b.x, 'y2': point_b.y,
-                'strokeWidth': value * settings["aspect-maximun-stroke"]
+                'strokeWidth': value * settings["aspect-full-stroke"]
             });
         }
 
         return line;
     };
 
-    function synastry(visible) {
-        settings["synastry"]["visible"] = visible;
-
-        _svg.select("#synastry-houses").attr({"visibility": visible ? "visible" : "hidden"});
-        // Hide synastry cover if synastry is visible
-        _svg.select("#cover").attr({"visibility": visible ? "hidden" : "visible"});
-    }
-
     // Builds the public API for an AstrochartTheme.
     return {
         "ascendant" : ascendant,
-        "astro" : astro,
+        "orb" : orb,
         "house" : house,
         "aspect" : aspect,
         "invalidate" : invalidate

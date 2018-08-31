@@ -856,6 +856,13 @@
          inkscape:connector-curvature="0"
          style="display:inline;fill:#cccccc;fill-opacity:1;stroke:#ffffff;stroke-width:2.32838988" />
     </g>
+    <circle
+       id="path3898"
+       style="display:inline;fill:#f2f2f2;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.9000001;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       cx="300"
+       cy="300"
+       r="182.67767"
+       transform="translate(2)" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -982,12 +989,6 @@
        rx="1"
        ry="0.99999994"
        inkscape:label="" />
-    <circle
-       id="path3898"
-       style="fill:#f2f2f2;stroke:#ffffff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.9000001;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       cx="300"
-       cy="300"
-       r="182.67767" />
     <g
        transform="matrix(0.85886774,0,0,0.85327319,34.032074,3.707612)"
        id="house-1-text"

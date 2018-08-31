@@ -1,7 +1,6 @@
 "use strict";
 
 const defaultSettings = {
-    'sprites-base-url': "/dist/image",
     'signs': ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
                "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"],
 }
@@ -105,7 +104,7 @@ class AstroEvent {
             if (position !== undefined) {
                 position = toDegree(position + this.event.ascendant);
                 this.event.orbs[orb] = position;
-                this.chart.theme.astro(orb, position);
+                this.chart.theme.orb(orb, position);
             }
 
             return this.describe(this.event.orbs[orb])
@@ -132,7 +131,7 @@ class Astrochart {
 
     constructor(settings) {
         this.settings = $.extend(defaultSettings, settings)
-        this.theme = new Astrochart.AstrochartTheme(this.settings)
+        this.theme = new Astrochart.AstrochartTheme(this.settings.theme)
         this.events = [new AstroEvent(this)]
     }
 
