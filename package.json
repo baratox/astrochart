@@ -1,20 +1,22 @@
 {
   "name": "astrochart",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "title": "AstroChart",
-  "homepage": "",
-  "description": "A JavaScript Astrology Chart that looks like art.",
+  "description": "An Astrology Chart that looks like art.",
+  "scripts": {
+    "prepublish": "yarn run build",
+    "build": "yarn install && bower install && grunt"
+  },
   "author": {
-    "name": "KpriKornius",
-    "url": "",
-    "email": ""
+    "name": "Baratox",
+    "email": "fernando.rafael.ferreira@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/astrologosanonimos/astrochart"
+    "url": "https://bitbucket.org/mercuryou/astrochart"
   },
   "keywords": [
-    "vpl",
+    "astrology",
     "javascript",
     "library"
   ],
@@ -26,6 +28,11 @@
       "type": "MIT",
       "url": ""
     }
+  ],
+  "main": "dist/astrochart.js",
+  "files": [
+    "dist/astrochart.js",
+    "dist/image/zodiac.svg"
   ],
   "dependencies": {},
   "devDependencies": {
