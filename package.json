@@ -4,7 +4,7 @@
   "title": "AstroChart",
   "description": "An Astrology Chart that looks like art.",
   "scripts": {
-    "prepublish": "yarn run build",
+    "prepare": "yarn run build",
     "build": "yarn install && bower install && grunt"
   },
   "author": {
