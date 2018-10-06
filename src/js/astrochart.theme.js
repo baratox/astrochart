@@ -1,11 +1,15 @@
-
+import Snap from 'snapsvg'
+import './snap/snap.orbit'
+import './snap/snap.transformOriginal'
+import $ from 'jquery'
+import template from '../image/zodiac.svg'
 /**
  * A theme draws the actual map with all provided information.
  * The theme is composed of two SVG templates
  **/
-Astrochart.AstrochartTheme = function(_settings) {
+export default function AstrochartTheme(_settings) {
 
-    var settings = jQuery.extend({
+    var settings = $.extend({
         // SVG template to load
         'template': "/dist/image/zodiac.svg",
 
@@ -66,7 +70,9 @@ Astrochart.AstrochartTheme = function(_settings) {
         viewBox: '0 0 ' + [settings["width"], settings["height"]].join(" "),
     });
 
-    Snap.load(settings['template'], function(svg) {
+    let absolute_zero
+
+    Snap.load('/dist/' + template, function(svg) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
         _svg.append(svg.select("#houses"));
@@ -255,8 +261,8 @@ Astrochart.AstrochartTheme = function(_settings) {
             }
 
             var angleFrom = element.data('position')
-                // Rotate counter-clock, with 0º at the farthest west, the ascendant.
-                angleTo = _round(-zodiac);
+            // Rotate counter-clock, with 0º at the farthest west, the ascendant.
+            var angleTo = _round(-zodiac)
 
             console.debug("Moving", name, "from", angleFrom, "to", angleTo);
 

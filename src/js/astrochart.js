@@ -1,4 +1,5 @@
-"use strict";
+import $ from 'jquery'
+import AstrochartTheme from "./astrochart.theme"
 
 const defaultSettings = {
     'signs': ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra",
@@ -131,7 +132,7 @@ class Astrochart {
 
     constructor(settings) {
         this.settings = $.extend(defaultSettings, settings)
-        this.theme = new Astrochart.AstrochartTheme(this.settings.theme)
+        this.theme = new AstrochartTheme(this.settings.theme)
         this.events = [new AstroEvent(this)]
     }
 
