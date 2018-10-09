@@ -7,7 +7,7 @@ import template from '../image/zodiac.svg'
  * A theme draws the actual map with all provided information.
  * The theme is composed of two SVG templates
  **/
-export default function AstrochartTheme(_settings) {
+export default function AstrochartTheme(element, _settings) {
 
     var settings = $.extend({
         // SVG template to load
@@ -65,7 +65,8 @@ export default function AstrochartTheme(_settings) {
     }, _settings);
 
 
-    var _svg = Snap();
+    console.log("Appending Astrochart to " + element);
+    var _svg = Snap(element);
     _svg.attr({
         viewBox: '0 0 ' + [settings["width"], settings["height"]].join(" "),
     });
