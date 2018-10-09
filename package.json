@@ -30,8 +30,7 @@
   ],
   "main": "dist/astrochart.js",
   "files": [
-    "dist/*",
-    "src/*"
+    "dist/*"
   ],
   "dependencies": {
     "jquery": "^3.3.1",
