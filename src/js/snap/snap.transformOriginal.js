@@ -1,3 +1,5 @@
+import * as Snap from 'snapsvg'
+
 Snap.plugin(function(Snap, Element, Paper) {
     'use strict';
 
@@ -27,7 +29,7 @@ Snap.plugin(function(Snap, Element, Paper) {
                         this.transform(original);
                     }
                 }
-                
+
             } else {
                 this.transform(t);
             }

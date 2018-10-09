@@ -8,12 +8,12 @@ services:
                 - UID=1000
                 - GID=985
         working_dir: '/home/node/Astrochart'
-        command: bash -c "yarn install && bower install && grunt serve"
+        command: bash -c "yarn install && yarn serve"
 
         ports:
             # From `grunt serve`
             - 9001:9001
         volumes:
-            # Mount the project directory to the container, so that changes 
+            # Mount the project directory to the container, so that changes
             # made inside the container reflect on the host.
             - ./:/home/node/Astrochart/

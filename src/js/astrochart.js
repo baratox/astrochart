@@ -29,7 +29,7 @@ function iterateIfCollection(argument, value, callback) {
 }
 
 
-class AstroEvent {
+export class AstroEvent {
     constructor(chart, ascendant, orbs, houses) {
         this.chart = chart
 
@@ -128,7 +128,7 @@ class AstroEvent {
     }
 }
 
-class Astrochart {
+export default class Astrochart {
 
     constructor(settings) {
         this.settings = $.extend(defaultSettings, settings)
@@ -159,6 +159,3 @@ class Astrochart {
         })
     }
 }
-
-
-window.Astrochart = Astrochart

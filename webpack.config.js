@@ -9,12 +9,14 @@ module.exports = {
 
     output: {
         filename: 'astrochart.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        library: 'Astrochart',
+        libraryTarget: 'umd',
     },
 
     module: {
         rules: [
-            { test: /\.(svg)$/, use: "file-loader" },
+            { test: /\.(svg)$/, use: "raw-loader" },
             {
                test: require.resolve('snapsvg'),
                use: 'imports-loader?this=>window,fix=>module.exports=0',

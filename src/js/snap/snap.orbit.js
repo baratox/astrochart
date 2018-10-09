@@ -1,10 +1,12 @@
+import * as Snap from 'snapsvg'
+
 Snap.plugin(function(Snap, Element, Paper) {
     'use strict';
 
     const PLANET_SIZE = 108;
 
     /**
-     * Moves the Snap.Element in a clock-wise circular orbit around 
+     * Moves the Snap.Element in a clock-wise circular orbit around
      * the given center. At 0º the element is at farthest east point.
      *
      * @method orbit
@@ -22,7 +24,7 @@ Snap.plugin(function(Snap, Element, Paper) {
 
 
     /**
-     * Moves the Snap.Element in a clock-wise circular orbit around 
+     * Moves the Snap.Element in a clock-wise circular orbit around
      * the given center. At 0º the element is at farthest east point.
      *
      * @method orbit

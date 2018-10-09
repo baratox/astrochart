@@ -4,8 +4,7 @@
   "title": "AstroChart",
   "description": "An Astrology Chart that looks like art.",
   "scripts": {
-    "prepare": "yarn run build",
-    "build": "webpack"
+    "prepare": "webpack"
   },
   "author": {
     "name": "Baratox",
@@ -31,23 +30,15 @@
   ],
   "main": "dist/astrochart.js",
   "files": [
-    "dist/astrochart.js",
-    "dist/image/zodiac.svg"
+    "dist/*",
+    "src/*"
   ],
   "dependencies": {
     "jquery": "^3.3.1",
     "snapsvg": "^0.5.1"
   },
   "devDependencies": {
-    "connect-livereload": "^0.6.0",
-    "file-loader": "^2.0.0",
-    "grunt": "^1.0.3",
-    "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-connect": "^1.0.2",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-notify": "^0.4.5",
+    "raw-loader": "^0.5.1",
     "imports-loader": "^0.8.0",
     "matchdep": "^2.0.0",
     "serve": "^10.0.2",

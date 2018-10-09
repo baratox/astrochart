@@ -1,4 +1,4 @@
-import Snap from 'snapsvg'
+import * as Snap from 'snapsvg'
 import './snap/snap.orbit'
 import './snap/snap.transformOriginal'
 import $ from 'jquery'
@@ -72,7 +72,9 @@ export default function AstrochartTheme(_settings) {
 
     let absolute_zero
 
-    Snap.load('/dist/' + template, function(svg) {
+    load(Snap.parse(template))
+
+    function load(svg) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
         _svg.append(svg.select("#houses"));
@@ -102,7 +104,7 @@ export default function AstrochartTheme(_settings) {
         });
 
         console.debug("Finished loading template.");
-    });
+    }
 
     function loadOrbsFromTemplate(svg) {
         for (var i in settings["orbs"]) {
