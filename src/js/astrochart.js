@@ -129,7 +129,7 @@ export class AstroEvent {
     }
 }
 
-export default class Astrochart {
+export class Astrochart {
 
     constructor(settings) {
         this.settings = $.extend(defaultSettings, settings)
@@ -160,3 +160,5 @@ export default class Astrochart {
         })
     }
 }
+
+export default Astrochart
