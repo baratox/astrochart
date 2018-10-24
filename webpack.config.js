@@ -14,6 +14,12 @@ module.exports = {
         libraryTarget: 'umd',
     },
 
+    devServer: {
+        disableHostCheck: true,
+        host: '0.0.0.0',
+        port: 8080
+    },
+
     module: {
         rules: [
             { test: /\.(svg)$/, use: "raw-loader" },

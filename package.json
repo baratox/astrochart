@@ -4,7 +4,8 @@
   "title": "AstroChart",
   "description": "An Astrology Chart that looks like art.",
   "scripts": {
-    "prepare": "webpack"
+    "prepare": "webpack",
+    "dev": "webpack-dev-server --inline --progress --config webpack.config.js"
   },
   "author": {
     "name": "Baratox",
@@ -37,13 +38,14 @@
     "snapsvg": "^0.5.1"
   },
   "devDependencies": {
-    "raw-loader": "^0.5.1",
     "imports-loader": "^0.8.0",
     "matchdep": "^2.0.0",
+    "raw-loader": "^0.5.1",
     "serve": "^10.0.2",
     "serve-static": "^1.11.1",
     "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
   },
   "engines": {
     "node": ">=0.10.17",

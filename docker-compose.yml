@@ -1,19 +1,23 @@
-version: '3.3'
+version: '3.0'
+
+networks:
+    traefik:
+        external: true
+
 services:
     astrochart:
-        build:
-            context: .
-            args:
-                # User Id and Group Id for the local user at the host.
-                - UID=1000
-                - GID=985
+        image: node:carbon
         working_dir: '/home/node/Astrochart'
-        command: bash -c "yarn install && yarn serve"
-
-        ports:
-            # From `grunt serve`
-            - 9001:9001
+        command: bash -c "yarn install && yarn run dev"
         volumes:
             # Mount the project directory to the container, so that changes
             # made inside the container reflect on the host.
             - ./:/home/node/Astrochart/
+        networks:
+          - traefik
+        labels:
+          - "traefik.backend=astrochart"
+          - "traefik.frontend.rule=Host:astrochart.localhost"
+          - "traefik.docker.network=traefik"
+          - "traefik.enable=true"
+          - "traefik.port=8080"
