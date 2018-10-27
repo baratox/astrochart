@@ -303,9 +303,9 @@ export default function AstrochartTheme(element, _settings) {
 
         const orbit = settings["aspect-radius"];
 
-        var point_a = _svg.get_orbit(-astro_a.data("position"), orbit,
+        var point_a = _svg.get_orbit(astro_a.data("position") + 180, orbit,
                                      settings["center"].x, settings["center"].y),
-            point_b = _svg.get_orbit(-astro_b.data("position"), orbit,
+            point_b = _svg.get_orbit(astro_b.data("position") + 180, orbit,
                                      settings["center"].x, settings["center"].y);
 
         // Always use the "smaller" object name first to build the id.
