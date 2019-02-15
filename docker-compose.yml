@@ -9,6 +9,7 @@ services:
         image: node:carbon
         working_dir: '/home/node/Astrochart'
         command: bash -c "yarn install && yarn run dev"
+        user: node
         volumes:
             # Mount the project directory to the container, so that changes
             # made inside the container reflect on the host.
