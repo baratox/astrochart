@@ -88,12 +88,12 @@ export default function AstrochartTheme(element, _settings) {
         // Initial position for houses in the sprites file.
         for (var house = 1; house <= 12; house++) {
             var id = "house-" + house;
-            var text = _svg.select("#" + id + "-text");
+            var text = _svg.select('#houses .label.house-' + house);
             if (text) {
                 text.data("position", settings["houses"][id]["text-position"]);
             }
 
-            var marker = _svg.select("#" + id + '-bar');
+            var marker = _svg.select('#houses .start-divider.house-' + house);
             if (marker) {
                 marker.data("position", settings["houses"][id]["position"]);
                 marker.data("text", text);
@@ -231,7 +231,7 @@ export default function AstrochartTheme(element, _settings) {
     };
 
     var house = function(house, zodiac) {
-        var element = _svg.select('#house-' + house + '-bar');
+        var element = _svg.select('#houses .start-divider.house-' + house);
         if (element) {
             if (zodiac === undefined) {
                 return element;
