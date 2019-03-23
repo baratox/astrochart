@@ -17,6 +17,7 @@ export default function AstrochartTheme(element, _settings) {
         'center': {'x': 300, 'y': 300},
         // Radius of the circular orbit for all orbs.
         'orbit-radius': 207,
+        'orbit-radius-synastry': 158,
 
         // Radius of the ends of an aspect line.
         'aspect-radius': 174,
@@ -78,36 +79,44 @@ export default function AstrochartTheme(element, _settings) {
     function load(svg) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
-        _svg.append(svg.select("#houses"));
+        loadHousesFromTemplate(svg, '#main');
+        loadHousesFromTemplate(svg, '#synastry');
         _svg.append(svg.select("#top"));
 
         _svg.select("#zodiac").transformOriginal();
 
-        loadOrbsFromTemplate(svg);
+        loadOrbsFromTemplate(svg, '#main', settings['orbit-radius']);
+        loadOrbsFromTemplate(svg, '#synastry', settings['orbit-radius-synastry']);
+
+        _svg.select('#synastry').attr({ visibility: 'hidden' })
+
+        console.debug("Finished loading template.");
+    }
+
+    function loadHousesFromTemplate(svg, root) {
+        _svg.append(svg.select(root));
 
         // Initial position for houses in the sprites file.
         for (var house = 1; house <= 12; house++) {
             var id = "house-" + house;
-            var text = _svg.select('#houses .label.house-' + house);
+            var text = _svg.select(root + ' .label.' + id);
             if (text) {
                 text.data("position", settings["houses"][id]["text-position"]);
             }
 
-            var marker = _svg.select('#houses .start-divider.house-' + house);
+            var marker = _svg.select(root + ' .start-divider.' + id);
             if (marker) {
                 marker.data("position", settings["houses"][id]["position"]);
                 marker.data("text", text);
             }
         }
 
-        _svg.select("#houses").attr({
+        _svg.select(root).attr({
             "visibility": settings["houses"]["visible"] ? "visible" : "hidden"
         });
-
-        console.debug("Finished loading template.");
     }
 
-    function loadOrbsFromTemplate(svg) {
+    function loadOrbsFromTemplate(svg, root, orbit) {
         for (var i in settings["orbs"]) {
             loadSpaceObject(svg, settings["orbs"][i]);
         }
@@ -117,14 +126,15 @@ export default function AstrochartTheme(element, _settings) {
             console.log("Loading", name, object);
             if (!object) {
                 // Create one based on the default planet sprite
-                object = svg.select("#" + settings["orb-sprite-default"]).clone();
-                object.attr({'id': name});
+                object = svg.select("#" + settings["orb-sprite-default"]);
             }
+
+            object = object.clone();
+            object.attr({ 'id': '', 'class': name + ' orb' });
             object.data("position", 0);
+            _svg.select(root).append(object);
 
-            _svg.append(object);
-
-            // Scale the planet down an center it to its coordinates
+            // Scale the planet down and center it to its coordinates
             var scale = 0.37;
             var half = scale * settings["orb-sprite-size"]/2;
 
@@ -134,7 +144,8 @@ export default function AstrochartTheme(element, _settings) {
             object.transform(matrix);
             object.transformOriginal();
 
-            object.orbit(0, settings["orbit-radius"], settings["center"].x, settings["center"].y);
+            object.data('orbit', orbit)
+            object.orbit(0, orbit, settings["center"].x, settings["center"].y);
         };
     }
 
@@ -167,12 +178,14 @@ export default function AstrochartTheme(element, _settings) {
         return Number(rounded.toFixed(3));
     }
 
-    var _centerHouseText = function(house_number) {
-        var text = house(house_number).data("text");
+    var _centerHouseText = function(house_number, synastry) {
+        var text = house(house_number, undefined, synastry).data("text");
         if (text) {
             var next = house_number < 12 ? house_number + 1 : 1;
 
-            var center = _round((house(house_number).data("position") + house(next).data("position")) / 2);
+            var center = _round(
+                (house(house_number, undefined, synastry).data("position") +
+                 house(next, undefined, synastry).data("position")) / 2);
             if (house_number == 12) center += 180;
 
             var rotation = _round(text.data("position") - center);
@@ -194,8 +207,9 @@ export default function AstrochartTheme(element, _settings) {
     var invalidate = function() {
         for (var house = 1; house <= 12; house++) {
             _centerHouseText(house);
+            _centerHouseText(house, true);
         }
-   };
+    };
 
     /**
      * Rotates the wheel so that given angle 'zodiac' is at 180º.
@@ -230,8 +244,9 @@ export default function AstrochartTheme(element, _settings) {
         }
     };
 
-    var house = function(house, zodiac) {
-        var element = _svg.select('#houses .start-divider.house-' + house);
+    var house = function(house, zodiac, synastry = false) {
+        const root = synastry ? '#synastry' : '#main'
+        var element = _svg.select(`${root} .houses .house-${house}.start-divider`);
         if (element) {
             if (zodiac === undefined) {
                 return element;
@@ -256,8 +271,9 @@ export default function AstrochartTheme(element, _settings) {
         }
     };
 
-    var orb = function(name, zodiac) {
-        var element = _svg.select("#" + name);
+    var orb = function(name, zodiac, synastry = false) {
+        const root = synastry ? '#synastry' : '#main'
+        var element = _svg.select(`${root} .orb.${name}`);
         if (element) {
             if (zodiac === undefined) {
                 return element;
@@ -271,7 +287,8 @@ export default function AstrochartTheme(element, _settings) {
 
             // Run animation if already loaded
             Snap.animate(angleFrom, angleTo, function(value) {
-                    element.orbit(value + 180, settings["orbit-radius"], settings["center"].x, settings["center"].y);
+                    element.orbit(value + 180, element.data('orbit'),
+                        settings["center"].x, settings["center"].y);
                 }, 400);
 
             element.data('position', angleTo);
@@ -329,12 +346,18 @@ export default function AstrochartTheme(element, _settings) {
         return line;
     };
 
+    var synastry = function (enabled) {
+        _svg.select('#synastry').attr({ visibility: enabled ? 'visible' : 'hidden' })
+        _svg.select('#cover').attr({ visibility: enabled ? 'hidden' : 'visible' })
+    }
+
     // Builds the public API for an AstrochartTheme.
     return {
         "ascendant" : ascendant,
         "orb" : orb,
         "house" : house,
         "aspect" : aspect,
-        "invalidate" : invalidate
+        "invalidate" : invalidate,
+        synastry
     }
 };

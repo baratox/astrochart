@@ -33,7 +33,7 @@ function iterateIfCollection(argument, value, callback) {
 export class AstroEvent {
     constructor(chart, ascendant, orbs, houses) {
         this.chart = chart
-
+        this.synastry = false
         this.event = {
             ascendant: ascendant || 0,
             orbs: orbs || {
@@ -106,7 +106,7 @@ export class AstroEvent {
             if (position !== undefined) {
                 position = toDegree(position + this.event.ascendant);
                 this.event.orbs[orb] = position;
-                this.chart.theme.orb(orb, position);
+                this.chart.theme.orb(orb, position, this.synastry);
             }
 
             return this.describe(this.event.orbs[orb])
@@ -118,7 +118,7 @@ export class AstroEvent {
             if (position !== undefined) {
                 position = toDegree(this.event.ascendant - position);
                 this.event.houses[house] = position;
-                this.chart.theme.house(house, position);
+                this.chart.theme.house(house, position, this.synastry);
             }
 
             return this.event.houses[house];
@@ -146,8 +146,15 @@ export class Astrochart {
 
     event(index) {
         if (index !== undefined) {
-            return this.events[index]
-
+            if (this.events[index]) {
+                return this.events[index]
+            } else {
+                this.theme.synastry(true)
+                var event = this.events[index] = new AstroEvent(this)
+                event.synastry = true
+                event.event.ascendant = this.events[0].event.ascendant
+                return event
+            }
         } else {
             return this.events[0]
         }

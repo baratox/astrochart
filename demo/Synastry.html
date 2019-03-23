@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Astrochart</title>
+    <style type="text/css">
+        body {
+            background: #17181b;
+        }
+        svg {
+            max-width: 600px;
+        }
+
+        svg .background {
+            fill: #17181b;
+        }
+
+        svg #zodiac-track {
+            fill: #31343d;
+        }
+
+        svg #zodiac-inner-track {
+            fill: #3e414c;
+            stroke: #5f6372;
+        }
+
+        svg #zodiac-signs path {
+            stroke: #3e414c;
+        }
+
+        svg #houses .house.label path {
+            stroke: #3e414c;
+            fill: #5f6372;
+        }
+
+        svg #orbit {
+            fill: none;
+            stroke: none;
+        }
+
+        svg line.sextile,
+        svg line.trine {
+            stroke: #7d7;
+            stroke-linecap: round;
+        }
+
+        svg line.opposite {
+            stroke: #d77;
+            stroke-linecap: round;
+        }
+
+        svg line.square {
+            stroke: #77d;
+            stroke-linecap: round;
+        }
+
+
+    </style>
+</head>
+<body>
+    <svg id="astrochart"></svg>
+    <script src="/astrochart.js"></script>
+    <script type="module">
+        (function() {
+            // Selfie
+            var chart = new Astrochart.default({
+                "theme": {
+                    // SVG template to load
+                    "template": "/dist/image/zodiac.svg",
+                    // ... overrides any setting defined in the `astrochart.theme.js`
+                }
+            });
+            window.chart = chart;
+
+            // Shamelessly use a timeout to wait for the chart to load...
+            setTimeout(function() {
+                console.log(chart.event())
+
+                chart.event().ascendant(113.11217433601871);
+                chart.event().orb({
+                    'sun': 289.43111851230805,
+                    'moon': 56.472178681937805,
+                    'mercury': 287.9038848534529,
+                    'venus': 242.69826088063633,
+                    'mars': 1.201020956977208,
+                    'jupiter': 349.054226520698,
+                    'saturn': 256.38630702429515,
+                    'uranus': 264.13288658224405,
+                    'neptune': 276.033244809184,
+                    'pluto': 219.6588681915625,
+                });
+                chart.event().house({
+                  1: 113.11217433601871,
+                  2: 87.67012048008655,
+                  3: 63.40518614681565,
+                  4: 36.7781334334328,
+                  5: 5.151955718783711,
+                  6: 328.94063899668225,
+                  7: 293.1121743360187,
+                  8: 267.67012048008655,
+                  9: 243.40518614681565,
+                  10: 216.7781334334328,
+                  11: 185.1519557187837,
+                  12: 148.94063899668225,
+                });
+
+                chart.event(1).orb({
+                    'sun': 289.43111851230805,
+                    'moon': 56.472178681937805,
+                    'mercury': 287.9038848534529,
+                    'venus': 242.69826088063633,
+                    'mars': 1.201020956977208,
+                    'jupiter': 349.054226520698,
+                    'saturn': 256.38630702429515,
+                    'uranus': 264.13288658224405,
+                    'neptune': 276.033244809184,
+                    'pluto': 219.6588681915625,
+                });
+                chart.event(1).house({
+                  1: 113.11217433601871,
+                  2: 87.67012048008655,
+                  3: 63.40518614681565,
+                  4: 36.7781334334328,
+                  5: 5.151955718783711,
+                  6: 328.94063899668225,
+                  7: 293.1121743360187,
+                  8: 267.67012048008655,
+                  9: 243.40518614681565,
+                  10: 216.7781334334328,
+                  11: 185.1519557187837,
+                  12: 148.94063899668225,
+                });
+
+                // chart.aspect([
+                //     {"a":"sun",     "b":"pluto",    "value":0.02277496792544582,    "classes":"sextile"},
+                //     {"a":"moon",    "b":"mars",     "value":0.5271157724960596,     "classes":"sextile"},
+                //     {"a":"mercury", "b":"pluto",    "value":0.17549833381096108,    "classes":"sextile"},
+                //     {"a":"venus",   "b":"moon",     "value":0.37739178013014796,    "classes":"opposite"},
+                //     {"a":"jupiter", "b":"sun",      "value":0.9623108008389977,     "classes":"sextile"},
+                //     {"a":"jupiter", "b":"mercury",  "value":0.8849658332754871,     "classes":"sextile"},
+                //     {"a":"jupiter", "b":"saturn",   "value":0.7332080503597126,     "classes":"square"},
+                //     {"a":"jupiter", "b":"uranus",   "value":0.49213399384539686,    "classes":"square"},
+                //     {"a":"jupiter", "b":"pluto",    "value":0.060464167086448126,   "classes":"trine"},
+                //     {"a":"neptune", "b":"pluto",    "value":0.6374376617621493,     "classes":"sextile"}]);
+            }, 1000);
+
+        })();
+    </script>
+</body>
+</html>
