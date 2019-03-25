@@ -80,6 +80,7 @@ export default function AstrochartTheme(element, _settings) {
         // Add everything from the sprites file.
         _svg.append(svg.select("#zodiac"));
         loadHousesFromTemplate(svg, '#main');
+        _svg.append(svg.select("#zodiac-inner-track"));
         loadHousesFromTemplate(svg, '#synastry');
         _svg.append(svg.select("#top"));
 
