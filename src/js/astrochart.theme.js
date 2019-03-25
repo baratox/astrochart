@@ -184,13 +184,14 @@ export default function AstrochartTheme(element, _settings) {
         if (text) {
             var next = house_number < 12 ? house_number + 1 : 1;
 
-            var center = _round(
-                (house(house_number, undefined, synastry).data("position") +
-                 house(next, undefined, synastry).data("position")) / 2);
-            if (house_number == 12) center += 180;
+            const begin = house(house_number, undefined, synastry).data("position")
+            const end = house(next, undefined, synastry).data("position")
+
+            var center = _round((begin + end) / 2);
+            if (begin > end) center += 180;
 
             var rotation = _round(text.data("position") - center);
-            // console.log("Centering text for house", house_number, "to", center, "by", rotation, "was", text.data("position"));
+            // console.log("Centering text for house", house_number, synastry ? " (synastry)" : "", "to", center, "by", rotation, "was", text.data("position"));
             text.data("position", center);
 
             var matrix = new Snap.Matrix();
@@ -248,6 +249,9 @@ export default function AstrochartTheme(element, _settings) {
     var house = function(house, zodiac, synastry = false) {
         const root = synastry ? '#synastry' : '#main'
         var element = _svg.select(`${root} .houses .house-${house}.start-divider`);
+
+        console.debug("Rotating house", house);
+
         if (element) {
             if (zodiac === undefined) {
                 return element;
