@@ -4,36 +4,36 @@
 <head>
     <title>Astrochart</title>
     <style type="text/css">
-        body {
+        body.dark {
             background: #17181b;
         }
         svg {
             max-width: 600px;
         }
 
-        svg .background {
+        .dark svg .background {
             fill: #17181b;
         }
 
-        svg #zodiac-track {
+        .dark svg #zodiac-track {
             fill: #31343d;
         }
 
-        svg #zodiac-inner-track {
+        .dark svg #zodiac-inner-track {
             fill: #3e414c;
             stroke: #5f6372;
         }
 
-        svg #zodiac-signs path {
+        .dark svg #zodiac-signs path {
             stroke: #3e414c;
         }
 
-        svg #houses .house.label path {
+        .dark svg #houses .house.label path {
             stroke: #3e414c;
             fill: #5f6372;
         }
 
-        svg #orbit {
+        .dark svg #orbit {
             fill: none;
             stroke: none;
         }
@@ -57,7 +57,7 @@
 
     </style>
 </head>
-<body>
+<body class="dark">
     <svg id="astrochart"></svg>
     <script src="/astrochart.js"></script>
     <script type="module">
