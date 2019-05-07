@@ -20,6 +20,8 @@ export default function AstrochartTheme (element, _settings) {
 
     // Radius of the ends of an aspect line.
     'aspect-radius': 174,
+    'aspect-radius-synastry': 132,
+
     // The `strokeWidth` of the line for an aspect between two orbs increases with how strong
     // the aspect is. This setting is the `strokeWidth` when the aspect is the strongest.
     'aspect-full-stroke': 4,
@@ -61,7 +63,9 @@ export default function AstrochartTheme (element, _settings) {
 
     // Size of the chart from the template
     'width': 600,
-    'height': 600
+    'height': 600,
+
+    'synastry': false
   }, _settings)
 
   console.log('Appending Astrochart to ' + element)
@@ -301,10 +305,15 @@ export default function AstrochartTheme (element, _settings) {
     if (!_isAspectTarget(a)) throw new Error(a + ' is unknown')
     if (!_isAspectTarget(b)) throw new Error(b + ' is unknown')
 
-    var orbA = _svg.select('#' + a)
-    var orbB = _svg.select('#' + b)
+    let orbA = _svg.select('#main .orb.' + a)
+    let orbB
+    if (settings['synastry']) {
+      orbB = _svg.select('#synastry .orb.' + b)
+    } else {
+      orbB = _svg.select('#main .orb.' + b)
+    }
 
-    const orbit = settings['aspect-radius']
+    const orbit = settings['synastry'] ? settings['aspect-radius-synastry'] : settings['aspect-radius']
 
     var orbAVertex = _svg.get_orbit(orbA.data('position') + 180, orbit,
       settings['center'].x, settings['center'].y)
@@ -334,6 +343,7 @@ export default function AstrochartTheme (element, _settings) {
   }
 
   var synastry = function (enabled) {
+      settings['synastry'] = enabled
     _svg.select('#synastry').attr({ visibility: enabled ? 'visible' : 'hidden' })
     _svg.select('#cover').attr({ visibility: enabled ? 'hidden' : 'visible' })
   }
