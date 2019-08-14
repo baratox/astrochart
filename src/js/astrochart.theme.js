@@ -255,6 +255,10 @@ export default function AstrochartTheme (element, _settings) {
 
       element.data('position', absolute)
 
+      // Remove any aspect with this house
+      var aspects = _svg.selectAll(`.aspect.house-${name}`)
+      aspects.forEach(aspect => aspect.remove())
+
       return element
     } else {
       throw new Error('House ' + house + ' does not exist')
@@ -282,6 +286,10 @@ export default function AstrochartTheme (element, _settings) {
       }, 400)
 
       element.data('position', angleTo)
+
+      // Remove any aspect with this orb
+      var aspects = _svg.selectAll(`.aspect.${name}`)
+      aspects.forEach(aspect => aspect.remove())
 
       return element
     } else {
@@ -319,12 +327,10 @@ export default function AstrochartTheme (element, _settings) {
     var orbBVertex = _svg.get_orbit(orbB.data('position') + 180, orbit,
       settings['center'].x, settings['center'].y)
 
-    // Always use the "smaller" object name first to build the id.
-    var id = a < b ? 'aspect-' + a + '-' + b : 'aspect-' + b + '-' + a
-    var line = _svg.select('#' + id)
+    var line = _svg.select(`.aspect.${a}.${b}`)
     if (!line) {
       line = _svg.line(orbAVertex.x, orbAVertex.y, orbBVertex.x, orbBVertex.y)
-      line.attr({ 'id': id, 'class': classes })
+      line.attr({ 'class': `aspect ${a} ${b} ${classes}` })
       line.attr({ 'stroke': '#777', 'strokeWidth': value * settings['aspect-full-stroke'] })
       _svg.add(line)
     } else {
