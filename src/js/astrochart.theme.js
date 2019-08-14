@@ -68,7 +68,7 @@ export default function AstrochartTheme (element, _settings) {
     'synastry': false
   }, _settings)
 
-  console.log('Appending Astrochart to ' + element)
+  // console.log('Appending Astrochart to ' + element)
   var _svg = Snap(element)
   _svg.attr({
     viewBox: '0 0 ' + [settings['width'], settings['height']].join(' ')
@@ -91,7 +91,7 @@ export default function AstrochartTheme (element, _settings) {
 
     _svg.select('#synastry').attr({ visibility: 'hidden' })
 
-    console.debug('Finished loading template.')
+    // console.debug('Finished loading template.')
   }
 
   function loadHousesFromTemplate (svg, root) {
@@ -124,7 +124,6 @@ export default function AstrochartTheme (element, _settings) {
 
     function loadSpaceObject (svg, name) {
       var object = svg.select('#' + name)
-      console.log('Loading', name, object)
       if (!object) {
         // Create one based on the default planet sprite
         object = svg.select('#' + settings['orb-sprite-default'])
@@ -216,7 +215,7 @@ export default function AstrochartTheme (element, _settings) {
 
       var angleFrom = settings['zodiac-rotation']
       var angleTo = zodiac
-      console.debug('Rotating zodiac to', zodiac, angleFrom, angleTo)
+      // console.debug('Rotating zodiac to', zodiac, angleFrom, angleTo)
       // eslint-disable-next-line no-undef
       let easeout = mina.easeout
       Snap.animate(angleFrom, angleTo, function (value) {
@@ -237,7 +236,7 @@ export default function AstrochartTheme (element, _settings) {
     const root = synastry ? '#synastry' : '#main'
     var element = _svg.select(`${root} .houses .house-${house}.start-divider`)
 
-    console.debug('Rotating house', house)
+    // console.debug('Rotating house', house)
 
     if (element) {
       if (zodiac === undefined) {
@@ -247,7 +246,7 @@ export default function AstrochartTheme (element, _settings) {
       var absolute = _round(zodiac)
       var rotation = _round(element.data('position') - absolute)
 
-      console.debug('Rotating house', house, 'to', absolute, '(', rotation, 'rotation ).')
+      // console.debug('Rotating house', house, 'to', absolute, '(', rotation, 'rotation ).')
 
       var matrix = new Snap.Matrix()
       matrix.rotate(rotation, 300, 300)
@@ -274,7 +273,7 @@ export default function AstrochartTheme (element, _settings) {
       // Rotate counter-clock, with 0º at the farthest west, the ascendant.
       var angleTo = _round(-zodiac)
 
-      console.debug('Moving', name, 'from', angleFrom, 'to', angleTo)
+      // console.debug('Moving', name, 'from', angleFrom, 'to', angleTo)
 
       // Run animation if already loaded
       Snap.animate(angleFrom, angleTo, function (value) {
