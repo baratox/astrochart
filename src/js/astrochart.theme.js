@@ -28,8 +28,18 @@ export default function AstrochartTheme (element, _settings) {
 
     // The name of all supported orbs: planets, ex-planets, asteroids, etc.
     // This is also the id for the SVG sprite for it in the template.
-    'orbs': ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus',
-      'neptune', 'pluto'],
+    'orbs': {
+      sun: { startPosition: 36 * 1 },
+      moon: { startPosition: 36 * 2 },
+      mercury: { startPosition: 36 * 3 },
+      venus: { startPosition: 36 * 4 },
+      mars: { startPosition: 36 * 5 },
+      jupiter: { startPosition: 36 * 6 },
+      saturn: { startPosition: 36 * 7 },
+      uranus: { startPosition: 36 * 8 },
+      neptune: { startPosition: 36 * 9 },
+      pluto: { startPosition: 36 * 10 }
+    },
 
     // Id of the SVG element to use as orb sprite when a specific one is not found.
     'orb-sprite-default': 'planet',
@@ -118,8 +128,8 @@ export default function AstrochartTheme (element, _settings) {
   }
 
   function loadOrbsFromTemplate (svg, root, orbit) {
-    for (var i in settings['orbs']) {
-      loadSpaceObject(svg, settings['orbs'][i])
+    for (var orb in settings.orbs) {
+      loadSpaceObject(svg, orb)
     }
 
     function loadSpaceObject (svg, name) {
@@ -129,13 +139,15 @@ export default function AstrochartTheme (element, _settings) {
         object = svg.select('#' + settings['orb-sprite-default'])
       }
 
+      const position = settings.orbs[name].startPosition
+
       object = object.clone()
       object.attr({ 'id': '', 'class': name + ' orb' })
-      object.data('position', 0)
+      object.data('position', position)
       _svg.select(root).append(object)
 
       // Scale the planet down and center it to its coordinates
-      var scale = 0.37
+      var scale = 0.420
       var half = scale * settings['orb-sprite-size'] / 2
 
       var matrix = new Snap.Matrix()
@@ -145,7 +157,7 @@ export default function AstrochartTheme (element, _settings) {
       object.transformOriginal()
 
       object.data('orbit', orbit)
-      object.orbit(0, orbit, settings['center'].x, settings['center'].y)
+      object.orbit(position, orbit, settings['center'].x, settings['center'].y)
     };
   }
 
@@ -222,7 +234,7 @@ export default function AstrochartTheme (element, _settings) {
         var matrix = new Snap.Matrix()
         matrix.rotate(-value, 300, 300)
         wheel.transformOriginal(matrix)
-      }, Math.abs(angleTo - angleFrom) * 9, easeout)
+      }, Math.abs(angleTo - angleFrom) * 12, easeout)
 
       wheel.data('rotation', angleTo)
 
@@ -280,10 +292,12 @@ export default function AstrochartTheme (element, _settings) {
       // console.debug('Moving', name, 'from', angleFrom, 'to', angleTo)
 
       // Run animation if already loaded
+      // eslint-disable-next-line no-undef
+      let easeout = mina.easeout
       Snap.animate(angleFrom, angleTo, function (value) {
         element.orbit(value + 180, element.data('orbit'),
           settings['center'].x, settings['center'].y)
-      }, 400)
+      }, 1400, easeout)
 
       element.data('position', angleTo)
 
@@ -298,7 +312,7 @@ export default function AstrochartTheme (element, _settings) {
   }
 
   function _isAspectTarget (target) {
-    if (settings['orbs'].indexOf(target) >= 0) {
+    if (settings.orbs[target]) {
       return true
     } else if (target in settings['houses']) {
       return true
@@ -348,7 +362,7 @@ export default function AstrochartTheme (element, _settings) {
   }
 
   var synastry = function (enabled) {
-      settings['synastry'] = enabled
+    settings['synastry'] = enabled
     _svg.select('#synastry').attr({ visibility: enabled ? 'visible' : 'hidden' })
     _svg.select('#cover').attr({ visibility: enabled ? 'hidden' : 'visible' })
   }
