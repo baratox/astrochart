@@ -12,6 +12,8 @@ export default function AstrochartTheme (element, _settings) {
     // SVG template to load
     'template': '/dist/image/zodiac.svg',
 
+    animationDuration: 1400, // ms
+
     // Center of all that exists, around which everything orbits.
     'center': { 'x': 300, 'y': 300 },
     // Radius of the circular orbit for all orbs.
@@ -89,6 +91,8 @@ export default function AstrochartTheme (element, _settings) {
   function load (svg) {
     // Add everything from the sprites file.
     _svg.append(svg.select('#zodiac'))
+    _svg.select('#zodiac').data('rotation', settings['zodiac-rotation'])
+
     loadHousesFromTemplate(svg, '#main')
     _svg.append(svg.select('#zodiac-inner-track'))
     loadHousesFromTemplate(svg, '#synastry')
@@ -225,7 +229,7 @@ export default function AstrochartTheme (element, _settings) {
 
       zodiac = _round(zodiac)
 
-      var angleFrom = settings['zodiac-rotation']
+      var angleFrom = wheel.data('rotation')
       var angleTo = zodiac
       // console.debug('Rotating zodiac to', zodiac, angleFrom, angleTo)
       // eslint-disable-next-line no-undef
@@ -234,7 +238,7 @@ export default function AstrochartTheme (element, _settings) {
         var matrix = new Snap.Matrix()
         matrix.rotate(-value, 300, 300)
         wheel.transformOriginal(matrix)
-      }, Math.abs(angleTo - angleFrom) * 12, easeout)
+      }, settings.animationDuration, easeout)
 
       wheel.data('rotation', angleTo)
 
@@ -297,7 +301,7 @@ export default function AstrochartTheme (element, _settings) {
       Snap.animate(angleFrom, angleTo, function (value) {
         element.orbit(value + 180, element.data('orbit'),
           settings['center'].x, settings['center'].y)
-      }, 1400, easeout)
+      }, settings.animationDuration, easeout)
 
       element.data('position', angleTo)
 
@@ -345,7 +349,11 @@ export default function AstrochartTheme (element, _settings) {
     if (!line) {
       line = _svg.line(orbAVertex.x, orbAVertex.y, orbBVertex.x, orbBVertex.y)
       line.attr({ 'class': `aspect ${a} ${b} ${classes}` })
-      line.attr({ 'stroke': '#777', 'strokeWidth': value * settings['aspect-full-stroke'] })
+      line.attr({
+        stroke: '#777',
+        strokeWidth: value * settings['aspect-full-stroke'],
+        opacity: 0
+      })
       _svg.add(line)
     } else {
       line.attr({
@@ -354,9 +362,16 @@ export default function AstrochartTheme (element, _settings) {
         'y1': orbAVertex.y,
         'x2': orbBVertex.x,
         'y2': orbBVertex.y,
-        'strokeWidth': value * settings['aspect-full-stroke']
+        'strokeWidth': value * settings['aspect-full-stroke'],
+        'opacity': 0
       })
     }
+
+    // eslint-disable-next-line no-undef
+    let easeout = mina.easeout
+    Snap.animate(0, 1, function (opacity) {
+      line.attr({ opacity })
+    }, settings.animationDuration, easeout)
 
     return line
   }

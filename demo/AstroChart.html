@@ -119,6 +119,70 @@
                     {"a":"neptune", "b":"pluto",    "value":0.6374376617621493,     "classes":"sextile"}]);
             }, 1000);
 
+            setTimeout(function() {
+                console.log(chart.event())
+
+                chart.event().ascendant(155.9416427104363);
+
+                chart.event().orb({
+                  jupiter: 351.375268355974,
+                  mars: 281.416764584223,
+                  mercury: 120.49600319671,
+                  moon: 220.081309480378,
+                  neptune: 273.329111108789,
+                  pluto: 214.760756552043,
+                  saturn: 243.085096327001,
+                  sun: 139.372982461061,
+                  uranus: 258.458114586744,
+                  venus: 184.759708727067
+                });
+
+                chart.event().house({
+                  1: 155.9416427104363,
+                  2: 128.1915819365467,
+                  3: 96.27601237996589,
+                  4: 61.586163277599155,
+                  5: 28.266624388495643,
+                  6: 359.5411361518806,
+                  7: 335.9416427104363,
+                  8: 308.1915819365467,
+                  9: 276.2760123799659,
+                  10: 241.58616327759916,
+                  11: 208.26662438849564,
+                  12: 179.5411361518806
+                });
+
+                chart.aspect([
+                  {"classes":"square","a":"moon","b":"sun","value":0.07083270193169255,"dms":"9°18","direction":"a"},
+                  {"classes":"square","a":"mercury","b":"moon","value":0.0414693716331499,"dms":"9°35","direction":"s"},
+                  {"classes":"semiSquare","a":"venus","b":"sun","value":0.871091244664901,"dms":"0°23","direction":"s"},
+                  {"classes":"biQuintile","a":"mars","b":"sun","value":0.5109455307903232,"dms":"1°57","direction":"s"},
+                  {"classes":"sextile","a":"mars","b":"moon","value":0.6661362240389082,"dms":"1°20","direction":"s"},
+                  {"classes":"square","a":"mars","b":"venus","value":0.33429441428440043,"dms":"6°39","direction":"a"},
+                  {"classes":"sesquiQuadrate","a":"jupiter","b":"moon","value":0.07348971889898337,"dms":"3°42","direction":"s"},
+                  {"classes":"trine","a":"jupiter","b":"mercury","value":0.08792651592644352,"dms":"9°07","direction":"s"},
+                  {"classes":"quintile","a":"jupiter","b":"mars","value":0.4896259429378915,"dms":"2°02","direction":"s"},
+                  {"classes":"trine","a":"saturn","b":"mercury","value":0.7410906869708839,"dms":"2°35","direction":"a"},
+                  {"classes":"sextile","a":"saturn","b":"venus","value":0.581346899983572,"dms":"1°40","direction":"s"},
+                  {"classes":"trine","a":"uranus","b":"sun","value":0.9085132125682776,"dms":"0°55","direction":"s"},
+                  {"classes":"sesquiQuadrate","a":"uranus","b":"mercury","value":0.2594721524914121,"dms":"2°58","direction":"a"},
+                  {"classes":"quintile","a":"uranus","b":"venus","value":0.5753985350806303,"dms":"1°42","direction":"a"},
+                  {"classes":"square","a":"uranus","b":"jupiter","value":0.7082846230769917,"dms":"2°55","direction":"a"},
+                  {"classes":"sesquiQuadrate","a":"neptune","b":"sun","value":0.7390321619318598,"dms":"1°03","direction":"s"},
+                  {"classes":"quincux","a":"neptune","b":"mercury","value":0.29172302198024624,"dms":"2°50","direction":"a"},
+                  {"classes":"square","a":"neptune","b":"venus","value":0.8569402381722142,"dms":"1°26","direction":"s"},
+                  {"classes":"conjunction","a":"neptune","b":"mars","value":0.19123465245661464,"dms":"8°05","direction":"s"},
+                  {"classes":"semiSextile","a":"neptune","b":"saturn","value":0.9186617394040487,"dms":"0°15","direction":"a"},
+                  {"classes":"quintile","a":"pluto","b":"sun","value":0.15305647725455174,"dms":"3°23","direction":"a"},
+                  {"classes":"conjunction","a":"pluto","b":"moon","value":0.46794470716648673,"dms":"5°19","direction":"s"},
+                  {"classes":"square","a":"pluto","b":"mercury","value":0.5735246644666632,"dms":"4°16","direction":"a"},
+                  {"classes":"semiSextile","a":"pluto","b":"venus","value":0.9996507250078347,"dms":"0°00","direction":"s"},
+                  {"classes":"sesquiQuadrate","a":"pluto","b":"jupiter","value":0.5963720490172335,"dms":"1°37","direction":"a"},
+                  {"classes":"semiSextile","a":"pluto","b":"saturn","value":0.4414465916525975,"dms":"1°41","direction":"s"},
+                  {"classes":"semiSquare","a":"pluto","b":"uranus","value":0.5657860115669944,"dms":"1°18","direction":"s"},
+                  {"classes":"sextile","a":"pluto","b":"neptune","value":0.6420886391864116,"dms":"1°26","direction":"s"}
+                ])
+              }, 5000);
         })();
     </script>
 </body>
