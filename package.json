@@ -1,6 +1,6 @@
 {
   "name": "astrochart",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "title": "AstroChart",
   "description": "An Astrology Chart that looks like art.",
   "scripts": {
@@ -34,21 +34,21 @@
     "dist/*"
   ],
   "dependencies": {
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "snapsvg": "^0.5.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-node": "^9.0.1",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "imports-loader": "^0.8.0",
     "raw-loader": "^0.5.1",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10"
+    "webpack": "^4.41.1",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.8.2"
   },
   "engines": {
     "node": ">=0.10.17",
